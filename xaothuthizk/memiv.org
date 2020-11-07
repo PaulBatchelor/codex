@@ -1,0 +1,180 @@
+#+PROPERTY: header-args:scheme :noweb yes :results silent
+
+#+NAME: memiv.scm
+#+BEGIN_SRC scheme :tangle memiv.scm
+<<loaders>>
+<<pages>>
+<<init>>
+<<memiv>>
+<<render>>
+(render 15 60)
+#+END_SRC
+
+#+NAME: memiv
+#+BEGIN_SRC scheme
+(define (memiv usejanet)
+  (gen_sine (ftnew 8192))
+  (regset zz 0)
+
+  (clock (param 0) (randi 130 139 10) (param 4))
+  (bhold zz)
+  (cabset zz 1)
+
+  (trigclk (cabget 1) "trig")
+  (trigrex 18 "trig")
+  (trigrex 9 "trig")
+  (trigex "trig")
+
+  (trigwget 1 "trig")
+  (monset zz 0)
+
+  (fmkik-deep
+    (lambda ()
+      (cabget 1)
+      (trigwget 1 "trig")
+      (mul zz zz))
+    (lambda () (regget 0)))
+
+  (eqfil zz 30 60 2)
+
+  (mul zz 0.6)
+
+  (cabget 1)
+  (trigwget 2 "trig")
+  (mul zz zz)
+  (tenvx zz 0.001 0.001 0.003)
+  (sine 2000 0.8)
+  (mul zz zz)
+  (add zz zz)
+
+  (cabget 1)
+  (trigwget 3 "trig")
+  (mul zz zz)
+  (tenvx zz 0.001 0.001 0.1)
+  (noise 0.5)
+  (butbp zz 8000 500)
+  (mul zz zz)
+  (add zz zz)
+
+  (bitnoise (trand (cabget 1) 50 2000) (maygate (metro 5) 0.5 0))
+  (maygate (cabget 1) 0.7 0)
+  (port zz 0.01)
+  (mul zz zz)
+  (butlp zz 700)
+  (mul zz 0.3)
+
+  (cabget 1)
+  (trigwget 1 "trig")
+  (mul zz zz)
+  (tenv zz 0.1 0.01 0.1)
+  (scale zz 1 0)
+  (mul zz zz)
+  (buthp zz 300)
+  (biscale (sine (trand (cabget 1) 100 8000) 1) 0 1)
+  (mul zz zz)
+
+  (add zz zz)
+
+  (cabget 1)
+  (tdiv zz 32 0)
+  (bdup)
+  (tog zz)
+  (monset zz 1)
+  (tenvx zz 0.001 0.002 0.2)
+  (fmpair
+     (randi (param 50) (param 400)
+      (expon (tdiv (cabget 1) 32 0) 110 1 1))
+   (param 1)
+   (param 1)
+   (param 10)
+   (randh 0 0.9 8)
+   (lambda () (regget 0)))
+  (mul zz 0.1)
+  (mul zz zz)
+  (bdup)
+  (simple-delay zz 0.9 0.1)
+  (butlp zz 8000)
+  (add zz zz)
+  (add zz zz)
+
+  (limit zz -0.8 0.8)
+  (mul zz 1.1)
+
+
+  (cabget 1)
+  (bunhold zz)
+  (monolith:trig-reset "trig"))
+#+END_SRC
+
+#+NAME: render
+#+BEGIN_SRC scheme
+(define (render-block)
+  (monolith:janet-eval "(memiv/render)"))
+(define (render dur fps)
+  (monolith:start-offline)
+  (monolith:realloc 8 10 49)
+  (monolith:janet-init)
+  (monolith:janet-eval "(import memiv)")
+  (monolith:janet-eval "(memiv/init)")
+  (monolith:h264-begin "memiv.h264" fps)
+  (init)
+  (memiv 1)
+  (wavout zz "memiv.wav")
+  (out zz)
+  (monolith:repeat render-block (* dur fps))
+  (monolith:h264-end))
+#+END_SRC
+
+#+NAME: init
+#+BEGIN_SRC scheme
+(define TOP
+(string-append
+(sys:getenv "CODEX_PATH") "/xaothuthizk"))
+(define (init)
+(monolith:trig-new "trig")
+(monolith:page-select "trig")
+(pgload))
+#+END_SRC
+
+
+#+BEGIN_SRC scheme
+#+END_SRC
+
+#+NAME: loaders
+#+BEGIN_SRC scheme
+(monolith:append-path (sys:getenv "CODEX_PATH"))
+(monolith:load "frags/fmkik.scm")
+#+END_SRC
+
+#+NAME: pages
+#+BEGIN_SRC scheme
+(define pages (list "trig"))
+(define (pgsave)
+    (monolith:state-open (string-append TOP "/memiv.db"))
+    (monolith:save-pages "memiv" pages)
+    (monolith:state-close))
+
+(define (pgload)
+    (monolith:state-open (string-append TOP "/memiv.db"))
+    (monolith:load-pages "memiv" pages)
+    (monolith:state-close))
+#+END_SRC
+
+
+#+NAME: loaders
+#+BEGIN_SRC scheme
+(monolith:load "ugens.scm")
+(monolith:load "trig.scm")
+#+END_SRC
+
+#+BEGIN_SRC scheme
+<<loaders>>
+<<pages>>
+<<init>>
+<<memiv>>
+<<render>>
+(monolith:start)
+(init)
+(define (run) (memiv 0) (out zz))
+#+END_SRC
+

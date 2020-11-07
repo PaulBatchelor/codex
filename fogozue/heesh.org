@@ -1,0 +1,87 @@
+#+PROPERTY: header-args:scheme :noweb yes :results silent
+
+#+NAME: heesh.scm
+#+BEGIN_SRC scheme :tangle heesh.scm
+<<loaders>>
+<<pages>>
+<<init>>
+<<heesh>>
+<<render>>
+(render 15 60)
+#+END_SRC
+
+#+NAME: heesh
+#+BEGIN_SRC scheme
+(define (heesh usejanet)
+  (chant-original))
+#+END_SRC
+
+#+NAME: render
+#+BEGIN_SRC scheme
+(define (render-block)
+  (monolith:janet-eval "(heesh/render)"))
+(define (render dur fps)
+  (monolith:start-offline)
+  (monolith:realloc 8 10 49)
+  (monolith:janet-init)
+  (monolith:janet-eval "(import heesh)")
+  (monolith:janet-eval "(heesh/init)")
+  (monolith:h264-begin "heesh.h264" fps)
+  (init)
+  (heesh 1)
+  (wavout zz "heesh.wav")
+  (out zz)
+  (monolith:repeat render-block (* dur fps))
+  (monolith:h264-end))
+#+END_SRC
+
+#+NAME: init
+#+BEGIN_SRC scheme
+(define TOP
+(string-append
+(sys:getenv "HOME")
+"/proj/TODO/playground/codex"))
+
+(define (init) '())
+#+END_SRC
+
+#+NAME: loaders
+#+BEGIN_SRC scheme
+(monolith:append-path
+  (string-append
+    (sys:getenv "HOME")
+    "/proj/TODO/playground/codex"))
+(monolith:load "frags/monk.scm")
+#+END_SRC
+
+#+NAME: pages
+#+BEGIN_SRC scheme
+(define pages (list "trig"))
+(define (pgsave)
+    (monolith:state-open (string-append TOP "/xodayjao/heesh.db"))
+    (monolith:save-pages "heesh" pages)
+    (monolith:state-close))
+
+(define (pgload)
+    (monolith:state-open (string-append TOP "/xodayjao/heesh.db"))
+    (monolith:load-pages "heesh" pages)
+    (monolith:state-close))
+#+END_SRC
+
+
+#+NAME: loaders
+#+BEGIN_SRC scheme
+(monolith:load "ugens.scm")
+#+END_SRC
+
+#+BEGIN_SRC scheme
+<<loaders>>
+<<pages>>
+<<init>>
+<<heesh>>
+<<render>>
+(monolith:start)
+(init)
+(define (run) (heesh 0) (out zz))
+#+END_SRC
+

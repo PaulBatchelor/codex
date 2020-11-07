@@ -1,0 +1,14 @@
+# The Candy Crystal Rainbow Codex
+@!(colorshuf "the candy crystal rainbow codex"
+# a spectrum from the prophet Eli
+@["#6dba82"
+"#07b39b"
+"#1098ad"
+"#5073b8"
+"#a166ab"
+"#ef4e7b"
+"#f37055"
+"#f79533"])
+!@
+
+@!(ref "sanctum" "enter.")!@

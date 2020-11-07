@@ -1,0 +1,15 @@
+(define (flurry rate del fdbk base ft cutoff glide)
+  (metro (rate))
+  (tseq zz 0 ft)
+  (add zz (base))
+  (port zz (glide))
+  (mtof zz)
+  (blsaw zz 0.5)
+  (moogladder zz (cutoff) (param 0.3))
+  (bdup)
+  (simple-delay
+   zz
+   (fdbk)
+   (param del))
+  (mul zz (ampdb -10))
+  (add zz zz))

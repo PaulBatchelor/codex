@@ -1,0 +1,66 @@
+(def rainbow1
+  @[@[0xee 0x40 0x35]
+    @[0xf3 0x77 0x36]
+    @[0xfd 0xf4 0x98]
+    @[0x7b 0xc0 0x43]
+    @[0x02 0x92 0xcf]])
+
+(def rainbow-eli
+  @[@[0x6d 0xba 0x82]
+    @[0x07 0xb3 0x9b]
+    @[0x10 0x98 0xad]
+    @[0x50 0x73 0xb8]
+    @[0xa1 0x66 0xab]
+    @[0xef 0x4e 0x7b]
+    @[0xf3 0x70 0x55]
+    @[0xf7 0x95 0x33]])
+
+(def rainbow-pastel
+  @[
+    @[0xfd 0xc9 0xc9]
+    @[0xff 0xe7 0xc9]
+    @[0xff 0xfa 0xc9]
+    @[0xc9 0xef 0xcb]
+    @[0xc9 0xf4 0xfb]
+    @[0xdb 0xc9 0xe9]
+])
+
+(def rainbow-dark
+  @[@[0x6d 0x00 0x00]
+    @[0x5a 0x32 0x00]
+    @[0x61 0x58 0x00]
+    @[0x03 0x31 0x06]
+    @[0x04 0x2b 0x31]
+    @[0x22 0x01 0x3c]])
+
+(defn morf [a b m]
+  (array
+   (math/floor (+ (* (- 1 m) (a 0)) (* m (b 0))))
+   (math/floor (+ (* (- 1 m) (a 1)) (* m (b 1))))
+   (math/floor (+ (* (- 1 m) (a 2)) (* m (b 2))))))
+
+(defn shift [c s] c
+  (def out (array/new (length c)))
+  (def lim (length c))
+  (def sz (* s lim))
+  (def off (if (= sz lim) 0 (math/floor sz)))
+  (def fpos (if (= sz lim) 0 (- sz off)))
+  (for i 0 (length c)
+    (array/push
+     out
+     (morf
+      (c (% (+ i off) (length c)))
+      (c (% (+ i off 1) (length c)))
+      fpos)))
+  out)
+
+(defn rect [x y c]
+  (monolith/gfx-rect-fill x y 8 8 (c 0) (c 1) (c 2)))
+
+(defn border (rainbow &opt w h)
+  (default w 32)
+  (default h 24)
+  (for x 0 w
+    (rect (* x 8) 0 (rainbow (% x (length rainbow)))))
+  (for x 0 w
+    (rect (* x 8) (* (- h 1) 8) (rainbow (% (+ x 3) (length rainbow))))))

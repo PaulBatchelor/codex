@@ -1,0 +1,104 @@
+#+PROPERTY: header-args:scheme :noweb yes :results silent
+Emitting sounds.
+
+#+NAME: vohzul.scm
+#+BEGIN_SRC scheme :tangle vohzul.scm
+(monolith:load "ugens.scm")
+<<vohzul>>
+<<render>>
+(render 10 60)
+#+END_SRC
+
+
+#+NAME: vohzul
+#+BEGIN_SRC scheme
+(define basefreq 88)
+(define (mkosc nn rate)
+
+;; TODO: shape with LFO
+(fmpair (et nn basefreq 0 13 3)
+          (param 1)
+          (param 1)
+          (port
+           (randh
+            (param 0.1)
+            (param 2)
+            (randi (param 0.1) (scale (cabget 1) 0.1 40) (param 2)))
+           (mul
+            (randi 0 0.1 0.3)
+            (scale (cabget 1) 0.001 1)))
+          (randi
+           (param 0.1)
+           (param 0.9)
+           (mul (randi 0.1 0.2 0.5) (scale (cabget 1) 1 1000)))
+          (lambda () (regget 0)))
+(osc (/ 1 rate) 1 0 (lambda () (regget 0)))
+(scale zz 0 1)
+(mul zz zz))
+
+(define (vohzul)
+  (gen_sine (ftnew 8192))
+  (regset zz 0)
+  ;(osc 0.2 1 0 (lambda () (regget 0)))
+  ;(biscale zz 0 1)
+  (maygate (dmetro 0.5) 0.2 0)
+  (bhold zz)
+  (cabset zz 1)
+
+  (cabget 1)
+  (monset zz 0)
+
+  (mkosc 0 10)
+  (mkosc 3 11)
+  (add zz zz)
+  (mkosc 8 6)
+  (add zz zz)
+  (mkosc 7 4)
+  (add zz zz)
+  (mkosc 9 12)
+  (add zz zz)
+  (mkosc 10 11)
+  (add zz zz)
+  (mkosc 13 10)
+  (add zz zz)
+
+  (mul zz 0.1)
+
+  (bdup)
+  (jcrev zz)
+  (mul zz 3)
+  (dcblock zz)
+  (add zz zz)
+  (buthp zz 300)
+
+  (cabget 1)
+  (bunhold zz))
+#+END_SRC
+
+#+NAME: render
+#+BEGIN_SRC scheme
+(define (render-block)
+  (monolith:janet-eval "(vohzul/render)"))
+(define (render dur fps)
+  (monolith:start-offline)
+  (monolith:realloc 8 10 49)
+  (monolith:janet-init)
+  (monolith:janet-eval "(import vohzul)")
+  (monolith:janet-eval "(vohzul/init)")
+  (monolith:h264-begin "vohzul.h264" fps)
+  (vohzul)
+  (wavout zz "vohzul.wav")
+  (out zz)
+  (monolith:repeat render-block (* dur fps))
+  (monolith:h264-end))
+#+END_SRC
+
+
+#+BEGIN_SRC scheme
+(monolith:load "ugens.scm")
+(monolith:start)
+#+END_SRC
+
+#+BEGIN_SRC scheme
+(define (run) (vohzul) (out zz))
+#+END_SRC

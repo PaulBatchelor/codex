@@ -1,0 +1,6 @@
+PRAGMA foreign_keys=OFF;
+BEGIN TRANSACTION;
+CREATE TABLE seq16(key TEXT UNIQUE, steps BLOB, size INT, playhead INT);
+INSERT INTO seq16 VALUES('zhidaico:seq',X'dc0010cc02cc00cc00cc01cc00cc00cc04cc00cc07cc00cc08cc00cc00cc00cc00cc00',16,1);
+INSERT INTO seq16 VALUES('zhidaico:seq2',X'dc0010cc01cc00cc00cc00cc00cc02cc00cc03cc00cc05cc00cc04cc00cc00cc00cc00',16,1);
+COMMIT;

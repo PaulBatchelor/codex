@@ -1,0 +1,23 @@
+# open and clear wiki db
+
+(ww-open "a.db")
+(ww-clear)
+
+# unlinked pages
+
+
+# linked pages
+
+(ww-add-link "index" "index.org")
+(ww-add-link "sanctum" "sanctum.org")
+(ww-add-link "xuapanaos" "xuapanaos/xuapanaos.org")
+(ww-add-link "shqfamauzk" "shqfamauzk/shqfamauzk.org")
+(ww-add-link "naoyuguozk" "naoyuguozk/naoyuguozk.org")
+(ww-add-link "xaothuthizk" "xaothuthizk/xaothuthizk.org")
+(ww-add-link "xodayjao" "xodayjao/xodayjao.org")
+(ww-add-link "fogozue" "fogozue/fogozue.org")
+
+# sync and close
+
+(ww-sync)
+(ww-close)

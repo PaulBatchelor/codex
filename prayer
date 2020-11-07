@@ -1,0 +1,2 @@
+#!/bin/sh
+weewiki janet -e "(import giblang) (giblang/prayer)"

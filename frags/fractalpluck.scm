@@ -1,0 +1,11 @@
+;; Generated from fractalpluck.org
+(define (frctplk-name dir)
+  (string-append dir "frctfm_saw_01_01_01.wav"))
+(define (frctplk trig freq ft)
+  (tenvx (trig) 0.02 0.1 0.4)
+  (bdup)
+  (scale '() 300 500)
+  (osc (freq) (param 0.5) (param 0) ft)
+  (bswap)
+  (butlp '() '())
+  (mul '() '()))

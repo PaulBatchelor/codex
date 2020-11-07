@@ -1,0 +1,74 @@
+#+PROPERTY: header-args:scheme :noweb yes :results silent
+Emitting sounds.
+
+#+NAME: slab.scm
+#+BEGIN_SRC scheme :tangle slab.scm
+(monolith:load "ugens.scm")
+<<dy>>
+<<render>>
+(render 10 60)
+#+END_SRC
+
+
+#+NAME: dy
+#+BEGIN_SRC scheme
+(define (dy)
+  ;;(biscale (osc 0.2 1 0 (lambda () (gen_sine (ftnew 8192)))) 0 1)
+  (phasor (randh (param 0.08) (param 7) (randi 0.2 4 1)) 0)
+  (bhold zz)
+  (cabset zz 0)
+
+  (cabget 0)
+  (monset zz 0)
+  (mul
+   (bitnoise
+    (randi 500 510 10) (maygate (metro 10) 0.5 0))
+   0.1)
+  (butlp zz (scale (cabget 0) 200 8000))
+  (cabget 0)
+  (bunhold zz)
+
+  (metro 20)
+  (maygate zz 0.1 0)
+  (bdup)
+  (monset zz 1)
+  (bltriangle 2000 0.1)
+  (mul zz zz)
+  (add zz zz)
+
+  (metro 18.141)
+  (maygate zz 0.11 0)
+  (bdup)
+  (monset zz 2)
+  (bltriangle 1000 0.1)
+  (mul zz zz)
+  (add zz zz))
+#+END_SRC
+
+#+NAME: render
+#+BEGIN_SRC scheme
+(define (render-block)
+  (monolith:janet-eval "(slab/render)"))
+(define (render dur fps)
+  (monolith:start-offline)
+  (monolith:realloc 8 10 49)
+  (monolith:janet-init)
+  (monolith:janet-eval "(import slab)")
+  (monolith:janet-eval "(slab/init)")
+  (monolith:h264-begin "dy.h264" fps)
+  (dy)
+  (wavout zz "dy.wav")
+  (out zz)
+  (monolith:repeat render-block (* dur fps))
+  (monolith:h264-end))
+#+END_SRC
+
+
+#+BEGIN_SRC scheme
+(monolith:load "ugens.scm")
+(monolith:start)
+#+END_SRC
+
+#+BEGIN_SRC scheme
+(define (run) (dy) (out zz))
+#+END_SRC

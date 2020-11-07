@@ -1,0 +1,8 @@
+(define (fmdrone freq bright)
+  (fmpair (freq)
+          (param 1)
+          (param 1.01)
+          (bright)
+          (biscale (sine 0.15 1) 0.9 0.94)
+          (lambda () (gen_sine (ftnew 4096))))
+  (mul zz 0.4))

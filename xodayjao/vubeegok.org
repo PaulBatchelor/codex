@@ -1,0 +1,111 @@
+#+PROPERTY: header-args:scheme :noweb yes :results silent
+
+#+NAME: vubeegok.scm
+#+BEGIN_SRC scheme :tangle vubeegok.scm
+<<loaders>>
+<<pages>>
+<<init>>
+<<vubeegok>>
+<<render>>
+(render 20 60)
+#+END_SRC
+
+#+NAME: vubeegok
+#+BEGIN_SRC scheme
+(define (voice nn dur vibmn vibmx depth)
+(let* ((note nn)
+         (ft (lambda () (regget 0)))
+         (lfo (monolith:mkcab
+               (lambda ()
+                  (biscale (oscf (/ 1 dur) 0.75 ft) 0 1)) 0)))
+    (phasor (mtof
+             (add
+               (mul
+                 (oscf (scale (cabget lfo) vibmn vibmx) 0 ft)
+                 (scale (cabget lfo) 0 depth)) note)) 0)
+    (pdhalf zz (scale (cabget lfo) 0 0.8))
+    (oscfext zz ft)
+    (mul zz 0.3)
+    (mul zz (cabget lfo))
+    (cabclr lfo))
+)
+
+(define (vubeegok usejanet)
+  (gen_sine (ftnew 8192))
+  (regset zz 0)
+  (let ((base 57))
+    (voice (+ base 0 -12) 20 4 5.9 0.1)
+    (voice (+ base 2) 25 4 6.1 0.2)
+    (add zz zz)
+    (voice (+ base 3 12) 30 4 6 0.1)
+    (add zz zz)
+    (voice (+ base 5 12) 35 3 5 0.3)
+    (add zz zz)
+    (voice (+ base 7) 40 4 6.1 0.1)
+    (add zz zz)
+    (voice (+ base 11 12) 50 3 5.1 0.05)
+    (add zz zz))
+
+  (mul zz 0.4)
+  (butlp zz 2000)
+
+  (tenvx (tick) 0.001 0.002 0.01)
+  (oscf 1000 0.25 (lambda () (regget 0)))
+  (mul zz zz)
+  (mul zz 0.9)
+  (add zz zz)
+
+  (bitnoise (line (tick) 1000 4 100) (param 1))
+  (butlp zz 200)
+  (mul zz 0.1)
+  (add zz zz)
+
+  (bdup)
+  (bdup)
+  (revsc zz zz (line (tick) 1.05 10 0.97) (param 8000))
+  (add zz zz)
+  (dcblock zz)
+  (mul zz (ampdb -20))
+  (add zz zz))
+#+END_SRC
+
+#+NAME: render
+#+BEGIN_SRC scheme
+(define (render-block)
+  (monolith:janet-eval "(vubeegok/render)"))
+(define (render dur fps)
+  (monolith:start-offline)
+  (monolith:realloc 8 10 49)
+  (monolith:janet-init)
+  (monolith:janet-eval "(import vubeegok)")
+  (monolith:janet-eval "(vubeegok/init)")
+  (monolith:h264-begin "vubeegok.h264" fps)
+  (init)
+  (vubeegok 1)
+  (wavout zz "vubeegok.wav")
+  (out zz)
+  (monolith:repeat render-block (* dur fps))
+  (monolith:h264-end))
+#+END_SRC
+
+#+NAME: init
+#+BEGIN_SRC scheme
+(define (init) '())
+#+END_SRC
+
+#+NAME: loaders
+#+BEGIN_SRC scheme
+(monolith:load "ugens.scm")
+#+END_SRC
+
+#+BEGIN_SRC scheme
+<<loaders>>
+<<pages>>
+<<init>>
+<<vubeegok>>
+<<render>>
+(monolith:start)
+(init)
+(define (run) (vubeegok 0) (out zz))
+#+END_SRC
+

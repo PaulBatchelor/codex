@@ -1,0 +1,27 @@
+(define zz '())
+(define (stillbeep trig nn ft rf rt)
+  (trig)
+  (cabset (cabnew) (param rt))
+  (cabget rt)
+
+  (bdup)
+  (line zz 0 3 -0.1)
+  (add zz (nn))
+  (mtof zz)
+  (cabset (cabnew) (param rf))
+
+  (tenvx zz (param 0.1) (param 0.1) (param 0.3))
+  (fosc
+   (cabget rf)
+   (param 0.5)
+   (param 1)
+   (param 1)
+   (mul
+    (line (cabget rt) 1 1 0.0001)
+    (mul (div (param 220) (cabget rf)) 2))
+   ft)
+  (mul zz zz)
+  (butbp zz 200 100)
+  ;(bunhold (cabget rf))
+  ;(bunhold (cabget rt))
+)

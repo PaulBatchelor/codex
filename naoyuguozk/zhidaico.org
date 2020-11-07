@@ -1,0 +1,183 @@
+#+PROPERTY: header-args:scheme :noweb yes :results silent
+
+#+NAME: zhidaico.scm
+#+BEGIN_SRC scheme :tangle zhidaico.scm
+(monolith:load "ugens.scm")
+(monolith:load "seq16.scm")
+
+<<pages>>
+<<init>>
+<<zhidaico>>
+<<render>>
+(render 20 60)
+#+END_SRC
+
+#+NAME: zhidaico
+#+BEGIN_SRC scheme
+(define (get-note base seq ft)
+  (samphold
+   (mul
+    (seq16clkget seq)
+    (seq16gt seq)) (seq16val seq))
+  (tget zz ft)
+  (param base)
+  (add zz zz)
+  (port zz (randi 0.005 0.01 1.1))
+  (sine (randi 4 5 0.2) (randi 0 0.2 0.3))
+  (add zz zz)
+  (mtof zz))
+
+(define (cosmic-trumpet base seq ft)
+  (fmpair (get-note base seq ft)
+  (param 1)
+  (param 1)
+  (trand (mul (seq16clkget seq) (seq16gt seq)) 0.1 2.1)
+  (randi (param 0) (param 0.7) (randh 2 40 1))
+  (lambda () (regget 0)))
+  (mul zz 0.5)
+  (mul (seq16clkget seq) (seq16gt seq))
+  (tenvx zz 0.1 0.11 0.3)
+  (mul zz zz)
+)
+
+(define (ct-v2 c m)
+    (lambda (base seq ft)
+        (fmpair (get-note base seq ft)
+        (param c)
+        (param m)
+        (trand (mul (seq16clkget seq) (seq16gt seq)) 0.1 2.1)
+        (randi (param 0) (param 0.7) (randh 2 40 1))
+        (lambda () (regget 0)))
+        (mul zz 0.5)
+        (mul (seq16clkget seq) (seq16gt seq))
+        (tenvx zz 0.1 0.11 0.3)
+        (mul zz zz)))
+
+(define (zhidaico usejanet)
+  (gen_sine (ftnew 8192))
+  (regset zz 0)
+
+  (gen_vals (ftnew 1) "-1 0 2 4 7 9 11 12 14")
+  (regset zz 2)
+
+  (gen_vals (ftnew 1) "-1 -2 0 2 -5 -7 -12 4 5")
+  (regset zz 3)
+
+  (clock 0 67 4)
+  (bhold zz)
+  (cabset zz 1)
+
+  (seq16clk (maygate (cabget 1) 0.75 1) "seq")
+  (seq16clk (maygate (cabget 1) 0.75 1) "seq2")
+
+  ;;(fmpair (get-note 58 "seq" (lambda () (regget 2)))
+  ;;(param 1)
+  ;;(param 1)
+  ;;(trand (mul (seq16clkget "seq") (seq16gt "seq")) 0.1 2.1)
+  ;;(randi (param 0) (param 0.7) (randh 2 40 1))
+  ;;(lambda () (regget 0)))
+  ;;(mul zz 0.5)
+  ;;(mul (seq16clkget "seq") (seq16gt "seq"))
+  ;;(tenvx zz 0.1 0.11 0.3)
+  ;;(mul zz zz)
+
+  (cosmic-trumpet 58 "seq" (lambda () (regget 2)))
+  ((ct-v2 1 3) (- 58 12) "seq2" (lambda () (regget 3)))
+  (add zz zz)
+
+  (bdup)
+  (bdup)
+  (revsc zz zz (randi 0.94 0.97 0.3) (param 8000))
+  (bdrop)
+  (mul zz (ampdb -20))
+  (dcblock zz)
+  (add zz zz)
+
+  ;; setup for visuals
+  (cond
+   ((= usejanet 1)
+    (begin
+      (mul (seq16clkget "seq") (seq16gt "seq"))
+      (mul (seq16clkget "seq2") (seq16gt "seq2"))
+      (add zz zz)
+      (rvl
+        (string-append
+          (quotestring "zhidaico/addripple") " jex")))))
+
+  (cabget 1)
+  (bunhold zz)
+  (monolith:seq16-reset "seq")
+  (monolith:seq16-reset "seq2"))
+#+END_SRC
+
+#+NAME: render
+#+BEGIN_SRC scheme
+(define (render-block)
+  (monolith:janet-eval "(zhidaico/render)"))
+(define (render dur fps)
+  (monolith:start-offline)
+  (monolith:realloc 8 10 49)
+  (monolith:janet-init)
+  (monolith:janet-eval "(import zhidaico)")
+  (monolith:janet-eval "(zhidaico/init)")
+  (monolith:h264-begin "zhidaico.h264" fps)
+  (init)
+  (zhidaico 1)
+  (wavout zz "zhidaico.wav")
+  (out zz)
+  (monolith:repeat render-block (* dur fps))
+  (monolith:h264-end))
+#+END_SRC
+
+#+NAME: init
+#+BEGIN_SRC scheme
+(define (init)
+  (monolith:seq16-new "seq")
+  (monolith:seq16-new "seq2")
+  (pgload)
+  (monolith:seq16-playhead "seq" 1))
+#+END_SRC
+
+#+BEGIN_SRC scheme
+(monolith:seq16-playhead "seq2" 1)
+#+END_SRC
+
+#+NAME: pages
+#+BEGIN_SRC scheme
+(define TOP
+  (string-append
+  (sys:getenv "CODEX_PATH") "/naoyuguozk"))
+
+(define pages (list "seq" "seq2"))
+(define (pgsave)
+    (monolith:state-open (string-append TOP "/zhidaico.db"))
+    (monolith:save-pages "zhidaico" pages)
+    (monolith:state-close))
+
+(define (pgload)
+    (monolith:state-open (string-append TOP "/zhidaico.db"))
+    (monolith:load-pages "zhidaico" pages)
+    (monolith:state-close))
+#+END_SRC
+
+
+#+BEGIN_SRC scheme
+(monolith:load "ugens.scm")
+(monolith:load "seq16.scm")
+
+<<pages>>
+<<init>>
+<<zhidaico>>
+<<render>>
+(monolith:start)
+(init)
+#+END_SRC
+
+#+BEGIN_SRC scheme
+(define (mac0) (monolith:page-select "seq"))
+(define (mac1) (monolith:page-select "seq2"))
+#+END_SRC
+
+#+BEGIN_SRC scheme
+(define (run) (zhidaico 0) (out zz))
+#+END_SRC
