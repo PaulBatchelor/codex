@@ -1,5 +1,4 @@
-Making a note here on glyphs. None of this
-should appear in the output...
+Glyphs to represent light. Light to represent glyphs.
 
 0.
 
