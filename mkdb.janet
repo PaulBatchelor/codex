@@ -16,6 +16,9 @@
 (ww-add-link "xaothuthizk" "xaothuthizk/xaothuthizk.org")
 (ww-add-link "xodayjao" "xodayjao/xodayjao.org")
 (ww-add-link "fogozue" "fogozue/fogozue.org")
+(ww-add-link "taogoryxs" "taogoryxs/taogoryxs.org")
+(ww-add-link "magopau" "magopau/magopau.org")
+(ww-add-link "siigolue" "siigolue/siigolue.org")
 
 # sync and close
 
