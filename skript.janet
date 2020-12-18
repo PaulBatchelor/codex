@@ -114,3 +114,26 @@
    rows
    nchars
    patin))
+
+(defn mkfont [txt rows cols]
+  (def f @{})
+
+  (put f :rows rows)
+  (put f :cols cols)
+  (put f :width (* cols 8))
+  (put f :height (* rows 8))
+  (put f :buf (loadbuf
+               txt
+               (f :rows) (f :cols)
+               (f :width) (f :height)))
+
+  (put f :bp (monolith/btprnt-new (f :width) (f :height)))
+
+  (monolith/btprnt-drawbits
+   (f :bp) (f :buf)
+   @(0 0 (f :width) (f :height))
+   0 0 (f :width) (f :height) 0 0)
+
+  (put f :font (monolith/btprnt-bp->font (f :bp) 8 8))
+
+  f)
