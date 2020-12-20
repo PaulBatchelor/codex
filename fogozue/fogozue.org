@@ -9,8 +9,8 @@ vai lac heega geenaikees jecan mabuka. dae kaivuk reep caiz
 zufac sebaf beshar maelair kaechae jyzenush shaizhaep bynol.
 ** kaic
 lekush mabai zhug lairewaej rezaen debyg zhik zeezhaesh
-zheeha dizywow cagaich gysairaz rugaibuzh vaigykaez gee dus
-zhirim.
+zheeha dizywow @!(ref "magopau"
+"cagaich gysairaz rugaibuzh")!@ vaigykaez gee dus zhirim.
 
 @!(glimmer "heesh")!@
 

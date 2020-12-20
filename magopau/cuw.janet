@@ -1,4 +1,6 @@
 (import ../skript :as skript)
+(import ../spektrum :as spektrum)
+(import ../matter :as matter)
 
 
 (def paths (skript/mkfont "../pathways.txt" 8 16))
@@ -12,6 +14,8 @@
 
 
 (def text (apply string/from-bytes (range 33 (+ 33 44))))
+
+(def koan @["nymawa" "shaef" "gov"])
 
 (def empty " ")
 
@@ -45,6 +49,9 @@
 
 (def bulb-w-filled "E")
 (def bulb-w-empty "F")
+
+(def slab-width 192)
+(def slab-height 256)
 
 (def pathway-1
   (string
@@ -94,4 +101,30 @@
  @((* 3 24) 0 24 24)
  0 0 pathway-4)
 
-(monolith/btprnt-write-pbm bp "out.pbm")
+#(monolith/btprnt-write-pbm bp "out.pbm")
+
+(def main-rainbow spektrum/rainbow1)
+
+(def skrp (skript/mkfont "../a.txt" 8 8))
+
+(def black @[0 0 0])
+(defn draw (rainbow glimmer)
+  (def bg (spektrum/rainbow-pastel 5))
+  (def fg (spektrum/rainbow-dark 5))
+  (monolith/gfx-fill 255 255 255)
+  (spektrum/border glimmer 24 32)
+  (skript/utter-blackletter skrp (koan 0) 8 16 27)
+  (skript/utter-blackletter skrp (koan 1) 8 (+ 16 8) 27)
+  (skript/utter-blackletter skrp (koan 2) 8 (+ 16 16) 27)
+
+  (matter/window
+   skript/charboxborder-v2
+   skrp
+   (matter/bottomleft 8 8 1 1)
+   black
+   fg bg (skript/bless (koan 0)) matter/empty))
+
+(monolith/gfx-fb-init)
+(monolith/gfx-setsize slab-width slab-height)
+(draw main-rainbow main-rainbow)
+(monolith/gfx-write-png "cuw.png")

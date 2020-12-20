@@ -61,6 +61,14 @@
     (char bp (+ xpos (* i 8)) ypos (pat (% i (length pat)))
           (getcolor clr i) rows))))
 
+(defn charhline-v2 [fnt x y sz clr &opt pat]
+  (default pat nil)
+  (charhline (fnt :bp)
+             x y
+             sz clr
+             (fnt :rows) (fnt :cols)
+             pat))
+
 (defn charvline [bp xpos ypos size clr rows nchars &opt pat]
   (default pat nil)
   (for i 0 size
@@ -74,6 +82,15 @@
             (pat (% i (length pat)))
             (getcolor clr i) rows))))
 
+(defn charvline-v2 [fnt x y sz clr &opt pat]
+  (default pat nil)
+  (charvline (fnt :bp)
+             x y
+             sz clr
+             (fnt :rows) (fnt :cols)
+             pat) (default pat nil))
+
+
 (defn charboxborder [bp xpos ypos ncols nrows clr rows nchars &opt pat]
   (default pat nil)
   (charhline bp xpos ypos ncols clr rows nchars pat)
@@ -84,6 +101,14 @@
    bp
    (+ xpos (* (- ncols 1) 8))
    (+ ypos 8) (- nrows 2) clr rows nchars pat))
+
+(defn charboxborder-v2 [fnt xpos ypos ncols nrows clr &opt pat]
+  (default pat nil)
+  (charboxborder (fnt :bp)
+                 xpos ypos
+                 ncols nrows
+                 clr
+                 (fnt :rows) (fnt :cols) pat))
 
 
 (defn charbox [bp xpos ypos ncols nrows clr rows nchars &opt pat]
@@ -137,3 +162,13 @@
   (put f :font (monolith/btprnt-bp->font (f :bp) 8 8))
 
   f)
+
+(defn bless (str)
+  (map (fn (x) (- x 97)) (string/bytes str)))
+
+(defn utter-blackletter [fnt utter x y punc]
+  (charhline-v2
+   fnt x y
+   (+ (length utter) 1)
+   @[0 0 0]
+   (array/push (bless utter) punc)))
