@@ -2,7 +2,6 @@
 (import ../spektrum :as spektrum)
 (import ../matter :as matter)
 
-
 (def paths (skript/mkfont "../pathways.txt" 8 16))
 
 (def bp (monolith/btprnt-new 128 128))
@@ -17,25 +16,25 @@
 
 (def koan @["nymawa" "shaef" "gov"])
 
-(def empty " ")
+(def empty 0)
 
-(def road-filled "!")
-(def road-empty "\"")
+(def road-filled 1)
+(def road-empty 2)
 
-(def wall-filled "#")
-(def wall-empty "$")
+(def wall-filled 3)
+(def wall-empty 4)
 
-(def turn-sw-filled "5")
-(def turn-sw-empty "6")
+(def turn-sw-filled 21)
+(def turn-sw-empty 22)
 
-(def turn-nw-filled "7")
-(def turn-nw-empty "8")
+(def turn-nw-filled 23)
+(def turn-nw-empty 24)
 
-(def turn-ne-filled "9")
-(def turn-ne-empty ":")
+(def turn-ne-filled 25)
+(def turn-ne-empty 26)
 
-(def turn-se-filled ";")
-(def turn-se-empty "<")
+(def turn-se-filled 27)
+(def turn-se-empty 28)
 
 (def weave-ef-over "*")
 (def weave-ef-under ")")
@@ -47,61 +46,113 @@
 (def term-w-filled "-")
 (def term-w-empty ".")
 
-(def bulb-w-filled "E")
-(def bulb-w-empty "F")
+(def bulb-w-filled 37)
+(def bulb-w-empty 38)
+(def bulb-s-filled 39)
+(def bulb-s-empty 40)
+(def bulb-e-filled 41)
+(def bulb-e-empty 42)
+(def bulb-n-filled 43)
+(def bulb-n-empty 44)
 
 (def slab-width 192)
 (def slab-height 256)
+(def pmcols 24)
+(def pmrows 30)
+(def pmw (* pmcols 8))
+(def pmh (* pmrows 8))
 
-(def pathway-1
-  (string
-   turn-se-filled road-filled turn-sw-filled
-   wall-filled term-e-empty weave-ef-over
-   turn-ne-filled road-filled turn-nw-filled))
+(defn mkpathmap []
+  (var p @{})
+  (put p :map (array/new-filled (* pmcols pmrows) empty))
+  (put p :rows 30)
+  (put p :cols 24)
+  (put p :width (* (p :cols) 8))
+  (put p :height (* (p :rows) 8))
+  (put p :xpos 0)
+  (put p :ypos 0)
+  p)
 
-(def pathway-2
-  (string
-   turn-se-filled road-filled turn-sw-filled
-   weave-ef-under road-empty weave-ef-over
-   turn-ne-filled road-filled turn-nw-filled))
+(defn moveto [p x y]
+  (set (p :xpos) x)
+  (set (p :ypos) y))
 
-(def pathway-3
-  (string
-   turn-se-empty road-empty turn-sw-empty
-   weave-ee-under road-empty weave-ee-over
-   turn-ne-empty road-empty turn-nw-empty))
+(defn left [p]
+  (if (< (p :xpos) (- (p :cols) 1))
+    (set (p :xpos) (+ (p :xpos) 1))))
 
-(def pathway-4
-  (string
-   empty empty empty
-   bulb-w-empty empty empty
-   empty empty empty))
+(defn right [p]
+  (if (> (p :xpos) 0)
+    (set (p :xpos) (- (p :xpos) 1))))
+
+(defn down [p]
+  (if (< (p :ypos) (- (p :rows) 1))
+    (set (p :ypos) (+ (p :ypos) 1))))
+
+(defn stamp [p c]
+  (set ((p :map) (+ (* (p :ypos) (p :cols)) (p :xpos))) c))
+
+(defn leftstamp [p n c]
+  (for i 0 n (stamp p c) (left p)))
+
+(defn leftstampend [p c]
+  (leftstamp p (- (p :cols) (p :xpos)) c))
+
+(defn rightstamp [p n c]
+  (for i 0 n (stamp p c) (right p)))
+
+(defn downstamp [p n c]
+  (for i 0 n (stamp p c) (down p)))
+
+(defn downstampend [p c]
+  (downstamp p (- (p :rows) (p :ypos)) c))
+
+(def pathmap (mkpathmap))
+(def pathmap-bp (monolith/btprnt-new
+                 (pathmap :width)
+                 (pathmap :height)))
+
+(moveto pathmap 8 1)
+(stamp pathmap bulb-e-empty)
+(left pathmap)
+(leftstamp pathmap 8 road-empty)
+(stamp pathmap turn-sw-empty)
+(down pathmap)
+(downstamp pathmap 8 wall-empty)
+(stamp pathmap turn-ne-empty)
+(left pathmap)
+(leftstampend pathmap road-empty)
+
+(moveto pathmap 7 2)
+(stamp pathmap bulb-e-empty)
+(left pathmap)
+(leftstamp pathmap 8 road-empty)
+(stamp pathmap turn-sw-empty)
+(down pathmap)
+(downstampend pathmap wall-empty)
+(stamp pathmap bulb-s-empty)
+
+(moveto pathmap 5 3)
+(stamp pathmap bulb-e-empty)
+(left pathmap)
+(leftstamp pathmap 8 road-empty)
+(stamp pathmap turn-sw-empty)
+(down pathmap)
+(downstamp pathmap 8 wall-empty)
+(stamp pathmap turn-nw-empty)
+(right pathmap)
+(rightstamp pathmap 4 road-empty)
+(stamp pathmap bulb-e-empty)
 
 (monolith/btprnt-wraptext
- bp
+ pathmap-bp
  font
- @(0 0 24 24)
- 0 0 pathway-1)
+ @(0 0 (pathmap :width) (pathmap :height))
+ 0 0
+ (apply string/from-bytes
+        (map (fn (x) (+ x 32)) (pathmap :map))))
 
-(monolith/btprnt-wraptext
- bp
- font
- @(24 0 24 24)
- 0 0 pathway-2)
-
-(monolith/btprnt-wraptext
- bp
- font
- @((* 2 24) 0 24 24)
- 0 0 pathway-3)
-
-(monolith/btprnt-wraptext
- bp
- font
- @((* 3 24) 0 24 24)
- 0 0 pathway-4)
-
-#(monolith/btprnt-write-pbm bp "out.pbm")
+(monolith/btprnt-write-pbm pathmap-bp "out.pbm")
 
 (def main-rainbow spektrum/rainbow1)
 
@@ -122,7 +173,11 @@
    skrp
    (matter/bottomleft 8 8 1 1)
    black
-   fg bg (skript/bless (koan 0)) matter/empty))
+   fg bg (skript/bless (koan 0)) matter/empty)
+
+  (monolith/gfx-btprnt-stencil
+   pathmap-bp
+   0 8 (pathmap :width) (pathmap :height) 0 0 0 0 0))
 
 (monolith/gfx-fb-init)
 (monolith/gfx-setsize slab-width slab-height)
