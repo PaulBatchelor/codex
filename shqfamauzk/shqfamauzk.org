@@ -16,7 +16,8 @@ teemem shajez dehazheeh seemy peevyn maew paipizhan
 lan zyzhuzai buheebich shuha zefopai.
 ** sus
 fu mada gachaip gujaim zhyjair naibaedak bedil nylesh
-chaedym chozeet waereedush rash leepylej jo zenireev meel
+chaedym chozeet @!(ref "magopau"
+"waereedush rash leepylej")!@ jo zenireev meel
 pucaso mideegeech. bole gazuk necheezhuz haemaec zazheepu
 volyd @!(colorshuf "zhun weechaenozh hofun bichizhud
 shycafaiv weesyby taseegon coj tak. dataipuk beree cisih bojycesh")!@

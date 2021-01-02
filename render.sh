@@ -4,6 +4,7 @@ cd naoyuguozk; sh render.sh; cd ..
 cd xaothuthizk; sh render.sh; cd ..
 cd xodayjao; sh render.sh; cd ..
 cd fogozue; sh render.sh; cd ..
+cd magopau; sh render.sh; cd ..
 
 mkdir -p artifacts
 rsync -Rrvt \
@@ -13,4 +14,5 @@ rsync -Rrvt \
       xaothuthizk/memiv.png xaothuthizk/memiv.mp4 \
       xodayjao/vubeegok.png xodayjao/vubeegok.mp4 \
       fogozue/heesh.png fogozue/heesh.mp4 \
+      magopau/cuw.png magopau/cuw.mp4 \
       artifacts

@@ -2,13 +2,16 @@
 
 #+NAME: cuw.scm
 #+BEGIN_SRC scheme :tangle cuw.scm
+<<loader>>
 <<top>>
+<<render>>
+(render 20 60)
 #+END_SRC
 
 #+NAME: top
 #+BEGIN_SRC scheme
 (define (cuw)
-  (regset (sqlite-open smpdb) 0)
+  (regset (sqlite-open (monolith:mkhome "s/a.db")) 0)
   (wt1-arps (reggetf 0))
   (buthp zz 1000)
   (mul zz (ampdb -3))
@@ -27,44 +30,34 @@
 
 #+BEGIN_SRC scheme
 (define (run)
-  (regset (sqlite-open smpdb) 0)
-  (wt1-arps (reggetf 0))
-  (buthp zz 1000)
-  (mul zz (ampdb -3))
-  (critters)
-  (mul zz (ampdb -5))
-  (bdup)
-  (jcrev zz)
-  (add zz zz)
-  (add zz zz)
-
-  (wt4-osc3 (reggetf 0) (lambda () (dmetro 20)) (paramf (+ 37 0)))
-  (mul zz (ampdb -3))
-  (butlp zz 300)
-  (add zz zz)
-
+  (cuw)
   (out zz))
 #+END_SRC
 
-
+#+NAME: loader
 #+BEGIN_SRC scheme
-(monolith:start)
 (monolith:load "ugens.scm")
-#+END_SRC
-
-#+BEGIN_SRC scheme
-;(monolith:append-path (sys:getenv "CODEX_PATH"))
-(monolith:load "frags/wt1.scm")
-#+END_SRC
-
-#+BEGIN_SRC scheme
-(monolith:load "frags/critters.scm")
-#+END_SRC
-
-#+BEGIN_SRC scheme
 (monolith:load "wtutil.scm")
+(monolith:load "codex/frags/wt1.scm")
+(monolith:load "codex/frags/critters.scm")
+(monolith:load "codex/frags/wt4.scm")
 #+END_SRC
 
+#+NAME: render
 #+BEGIN_SRC scheme
-(monolith:load "wt4.scm")
+(define (render-block)
+  (monolith:janet-eval "(cuw/render)"))
+(define (render dur fps)
+  (monolith:start-offline)
+  (monolith:realloc 8 10 49)
+  (monolith:janet-init)
+  (monolith:janet-eval "(import cuw)")
+  (monolith:janet-eval "(cuw/gfx-init)")
+  (monolith:h264-begin "cuw.h264" fps)
+  (cuw)
+  (wavout zz "cuw.wav")
+  (out zz)
+  (monolith:janet-eval "(cuw/render-file)")
+  ;;(monolith:repeat render-block (* dur fps))
+  (monolith:h264-end))
 #+END_SRC
