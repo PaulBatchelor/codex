@@ -1,7 +1,7 @@
 (import ../skript :as skript)
 (import ../spektrum :as spektrum)
 (import ../matter :as matter)
-(import paths :as paths)
+(import ../paths :as paths)
 
 
 #(def font (paths :font))
