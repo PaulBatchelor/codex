@@ -81,3 +81,9 @@
 
 (defn downstampend [p c]
   (downstamp p (- (p :rows) (p :ypos)) c))
+
+(defn colorrow [pathmap bp clr pos]
+  (monolith/gfx-btprnt-stencil
+   bp
+   0 (+ 8 (* 8 pos)) (pathmap :width) 8 0 (* 8 pos)
+   (clr 0) (clr 1) (clr 2)))

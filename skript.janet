@@ -153,6 +153,7 @@
                (f :width) (f :height)))
 
   (put f :bp (monolith/btprnt-new (f :width) (f :height)))
+  (put f :bpfont (monolith/btprnt-bp->font (f :bp) 8 8))
 
   (monolith/btprnt-drawbits
    (f :bp) (f :buf)
@@ -172,3 +173,7 @@
    (+ (length utter) 1)
    @[0 0 0]
    (array/push (bless utter) punc)))
+
+(defn curse [bytes]
+  (apply string/from-bytes
+         (map (fn (x) (+ x 32)) bytes)))

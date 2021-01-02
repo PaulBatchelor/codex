@@ -3,7 +3,6 @@
 (import ../matter :as matter)
 (import ../paths :as paths)
 
-
 #(def font (paths :font))
 
 #(def text (apply string/from-bytes (range 33 (+ 33 44))))
@@ -26,17 +25,42 @@
       ((p :pathmap) :width)
       ((p :pathmap) :height)))
   (put p :main-rainbow spektrum/rainbow1)
+  (put p :shift 0)
   p)
 
 (def main-rainbow spektrum/rainbow1)
-# 
+#
 (def skrp (skript/mkfont "../a.txt" 8 8))
 
-(defn colorrow [pathmap bp clr pos]
-  (monolith/gfx-btprnt-stencil
+(defn stroll [bp s]
+  (def main
+    @[0 0
+      (monolith/btprnt-width bp)
+      (monolith/btprnt-height bp)])
+  #(monolith/btprnt-rect-filled
+  # bp main
+  # (math/floor (* (s :shift) (main 2))) 0 10 10 1)
+  (monolith/btprnt-wraptext
    bp
-   0 (+ 8 (* 8 pos)) (pathmap :width) 8 0 (* 8 pos)
-   (clr 0) (clr 1) (clr 2)))
+   (skrp :bpfont)
+   main
+   (math/floor (* (s :shift) (main 2))) 0
+   (skript/curse @[1]))
+
+  (monolith/btprnt-wraptext
+   bp
+   (skrp :bpfont)
+   main
+   (math/floor (* (- 1 (s :shift)) (main 2))) (- (main 3) 8)
+   (skript/curse @[2]))
+
+  (def s (math/floor (+ (* (s :shift) 10) 10)))
+  (monolith/btprnt-rect-filled
+   bp main
+   (math/floor (- (* (main 2) 0.5) (* s 0.5)))
+   (math/floor (- (* (main 3) 0.5) (* s 0.5)))
+   s s 1)
+)
 
 (defn draw (data rainbow glimmer)
   (def bg (spektrum/rainbow-pastel 5))
@@ -53,17 +77,17 @@
    skrp
    (matter/bottomleft 8 8 1 1)
    black
-   fg bg (skript/bless (koan 0)) matter/empty)
+   fg bg (skript/bless (koan 0)) stroll data)
 
   (monolith/gfx-btprnt-stencil
    (data :pathmap-bp)
    0 8 ((data :pathmap) :width) ((data :pathmap) :height) 0 0 0 0 0)
 
   (for i 0 ((data :pathmap) :rows)
-    (colorrow (data :pathmap)
-              (data :pathmap-bp)
-              (glimmer (% i (length rainbow)))
-              i)))
+    (paths/colorrow (data :pathmap)
+                    (data :pathmap-bp)
+                    (glimmer (% i (length rainbow)))
+                    i)))
 
 
 (defn init [data &opt imgname]
@@ -109,17 +133,13 @@
    (apply string/from-bytes
           (map (fn (x) (+ x 32)) (pathmap :map))))
 
-  ##(monolith/btprnt-write-pbm pathmap-bp "out.pbm")
-
   (draw data (data :main-rainbow) (data :main-rainbow))
-  (monolith/gfx-write-png imgname)
-)
+  (monolith/gfx-write-png imgname))
 
 (defn gfx-init []
   (monolith/gfx-fb-init)
   (monolith/gfx-setsize slab-width slab-height))
 
-(var shift 0)
 (var framepos 0)
 (var fps 60)
 (var sr 44100)
@@ -128,16 +148,20 @@
 (defn render [data]
   (draw data
         (data :main-rainbow)
-        (spektrum/shift (data :main-rainbow) shift))
+        (spektrum/shift (data :main-rainbow) (data :shift)))
   (if (= (% framepos fps) 0) (print framepos))
   (monolith/compute (math/floor (/ sr fps)))
   (monolith/h264-append)
   (set framepos (+ framepos 1))
   (def overload (monolith/chan-get 0))
-  (set shift (% (+ shift speed) 1))
-)
+  (set (data :shift) (% (+ (data :shift) speed) 1)))
 
 (defn render-file []
   (var data (mkdata))
   (init data)
   (for i 0 (* 20 fps) (render data)))
+
+# testing...
+# (gfx-init)
+# (var data (mkdata))
+# (init data)

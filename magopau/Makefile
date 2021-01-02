@@ -4,10 +4,6 @@ IDENTITY=cuw
 
 default: $(IDENTITY).mp4
 
-# .PHONY: test
-# test:
-# 	$(JANET) cuw.janet
-
 
 $(IDENTITY).scm: $(IDENTITY).org
 	worgle $(IDENTITY).org
@@ -21,6 +17,10 @@ $(IDENTITY).mp3: $(IDENTITY).wav
 $(IDENTITY).mp4: $(IDENTITY).mp3 $(IDENTITY).h264
 	ffmpeg -y -i $(IDENTITY).mp3 -i $(IDENTITY).h264 -c:v libx264 \
 	 -crf 18 -preset veryslow -vf format=yuv420p -c:a copy $(IDENTITY).mp4 
+
+.PHONY: test
+test:
+	$(JANET) cuw.janet
 
 clean:
 	$(RM) $(IDENTITY).mp4
