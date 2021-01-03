@@ -1,12 +1,12 @@
 #+PROPERTY: header-args:scheme :results silent :noweb yes
+
+#+NAME: loader
 #+BEGIN_SRC scheme
 (monolith:load "ugens.scm")
 (monolith:load "knobs.scm")
 (monolith:load "codex/frags/knobkit.scm")
-#+END_SRC
-
-#+BEGIN_SRC scheme
 (monolith:load "codex/frags/wt5.scm")
+(monolith:load "codex/hearth.scm")
 #+END_SRC
 
 #+BEGIN_SRC scheme
@@ -17,15 +17,41 @@
 (monolith:start)
 #+END_SRC
 
-
 #+BEGIN_SRC scheme
 (define (run)
-  (wt5-exp1)
+  (pyda-synth)
   (out zz))
 #+END_SRC
 
 #+BEGIN_SRC scheme
-(monolith:state-open %monolith:mkpath "codex/siigolue/pyda.db"))
+(monolith:state-open (monolith:mkpath "codex/siigolue/pyda.db"))
 (knobkit-load "wt5-exp1")
 (monolith:state-close)
+#+END_SRC
+
+#+NAME: pyda.scm
+#+BEGIN_SRC scheme :tangle pyda.scm
+<<loader>>
+(define (init)
+  (knobkit-create)
+  (monolith:state-open (monolith:mkpath "codex/siigolue/pyda.db"))
+  (knobkit-load "wt5-exp1")
+  (monolith:state-close))
+<<pyda>>
+<<render>>
+#+END_SRC
+
+#+NAME: pyda
+#+BEGIN_SRC scheme
+(define (pyda-synth)
+  (wt5-exp1))
+
+(define (pyda)
+  (init)
+  (pyda-synth))
+#+END_SRC
+
+#+NAME: render
+#+BEGIN_SRC scheme
+(hearth:render "pyda" pyda)
 #+END_SRC
