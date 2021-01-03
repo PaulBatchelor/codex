@@ -9,7 +9,7 @@ IDENTITY_FILES= \
 $(IDENTITY).scm: $(IDENTITY).org
 	worgle $(IDENTITY).org
 
-$(IDENTITY).png $(IDENTITY).wav $(IDENTITY).h264: $(IDENTITY).scm $(IDENTITY).janet
+$(IDENTITY).png $(IDENTITY).wav $(IDENTITY).h264: $(IDENTITY).scm $(IDENTITY).janet $(IDENTITY_AUX)
 	$(MONOLITH) $(IDENTITY).scm
 
 $(IDENTITY).mp3: $(IDENTITY).wav
