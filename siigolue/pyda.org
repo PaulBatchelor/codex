@@ -1,0 +1,31 @@
+#+PROPERTY: header-args:scheme :results silent :noweb yes
+#+BEGIN_SRC scheme
+(monolith:load "ugens.scm")
+(monolith:load "knobs.scm")
+(monolith:load "codex/frags/knobkit.scm")
+#+END_SRC
+
+#+BEGIN_SRC scheme
+(monolith:load "codex/frags/wt5.scm")
+#+END_SRC
+
+#+BEGIN_SRC scheme
+(knobkit-create)
+#+END_SRC
+
+#+BEGIN_SRC scheme
+(monolith:start)
+#+END_SRC
+
+
+#+BEGIN_SRC scheme
+(define (run)
+  (wt5-exp1)
+  (out zz))
+#+END_SRC
+
+#+BEGIN_SRC scheme
+(monolith:state-open %monolith:mkpath "codex/siigolue/pyda.db"))
+(knobkit-load "wt5-exp1")
+(monolith:state-close)
+#+END_SRC
