@@ -144,18 +144,14 @@
 
 #+NAME: pages
 #+BEGIN_SRC scheme
-(define TOP
-  (string-append
-  (sys:getenv "CODEX_PATH") "/naoyuguozk"))
-
 (define pages (list "seq" "seq2"))
 (define (pgsave)
-    (monolith:state-open (string-append TOP "/zhidaico.db"))
+    (monolith:state-open (monolith:mkpath "codex/naoyuguozk/zhidaico.db"))
     (monolith:save-pages "zhidaico" pages)
     (monolith:state-close))
 
 (define (pgload)
-    (monolith:state-open (string-append TOP "/zhidaico.db"))
+    (monolith:state-open (monolith:mkpath "codex/naoyuguozk/zhidaico.db"))
     (monolith:load-pages "zhidaico" pages)
     (monolith:state-close))
 #+END_SRC

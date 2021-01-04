@@ -20,7 +20,7 @@ zhidaico.mp4: zhidaico.mp3 zhidaico.h264
 	 -crf 18 -preset veryslow -vf format=yuv420p -c:a copy zhidaico.mp4 
 
 save: zhidaico.sqlite
-zhidaico.sqlite: zhidaico.db
+zhidaico.sqlite:
 	printf ".dump" | sqlite3 $< > $@
 
 zhidaico.db: zhidaico.sqlite
