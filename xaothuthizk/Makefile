@@ -22,7 +22,7 @@ $(IDENTITY).mp4: $(IDENTITY).mp3 $(IDENTITY).h264
 	 -crf 18 -preset veryslow -vf format=yuv420p -c:a copy $(IDENTITY).mp4 
 
 save: $(IDENTITY).sqlite
-$(IDENTITY).sqlite: $(IDENTITY).db
+$(IDENTITY).sqlite:
 	printf ".dump" | sqlite3 $< > $@
 
 $(IDENTITY).db: $(IDENTITY).sqlite

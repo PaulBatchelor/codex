@@ -127,9 +127,6 @@
 
 #+NAME: init
 #+BEGIN_SRC scheme
-(define TOP
-(string-append
-(sys:getenv "CODEX_PATH") "/xaothuthizk"))
 (define (init)
 (monolith:trig-new "trig")
 (monolith:page-select "trig")
@@ -142,20 +139,19 @@
 
 #+NAME: loaders
 #+BEGIN_SRC scheme
-(monolith:append-path (sys:getenv "CODEX_PATH"))
-(monolith:load "frags/fmkik.scm")
+(monolith:load "codex/frags/fmkik.scm")
 #+END_SRC
 
 #+NAME: pages
 #+BEGIN_SRC scheme
 (define pages (list "trig"))
 (define (pgsave)
-    (monolith:state-open (string-append TOP "/memiv.db"))
+    (monolith:state-open (monolith:mkpath "codex/xaothuthizk/memiv.db"))
     (monolith:save-pages "memiv" pages)
     (monolith:state-close))
 
 (define (pgload)
-    (monolith:state-open (string-append TOP "/memiv.db"))
+    (monolith:state-open (monolith:mkpath "codex/xaothuthizk/memiv.db"))
     (monolith:load-pages "memiv" pages)
     (monolith:state-close))
 #+END_SRC
