@@ -41,9 +41,7 @@
   (paths/stamp pm paths/bulb-n-empty)
   (paths/down pm)
   (paths/smartdownstamp pm 5 paths/wall-empty)
-  (paths/stamp pm paths/bulb-s-empty)
-
-)
+  (paths/stamp pm paths/bulb-s-empty))
 
 (defn mkdata []
   (var p @{})
@@ -58,10 +56,12 @@
   (put p :pm-bp (paths/mkbtprnt (p :pm)))
   (veins (p :pm))
   (paths/bpwrite (p :pm-bp) (p :paths) (p :pm))
+  (put p :shift 0)
+  (put p :speed 0.008)
   p)
 
 (defn draw [data]
-  (def glimmer (data :rainbow))
+  (def glimmer (spektrum/shift (data :rainbow) (data :shift)))
   (monolith/gfx-fill 255 255 255)
   (spektrum/border glimmer 24 32)
   (skript/utter-blackletter
@@ -138,7 +138,8 @@
   (draw data)
   (monolith/gfx-write-png "pyda.png")
   (for i 0 (* 20 60)
-    (hearth/render-block draw data 44100 60 i)))
+    (hearth/render-block draw data 44100 60 i)
+    (set (data :shift) (% (+ (data :shift) (data :speed)) 1))))
 
 (defn test []
   (hearth/gfx-init)
