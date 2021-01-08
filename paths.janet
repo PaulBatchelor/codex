@@ -52,11 +52,11 @@
   (set (p :xpos) x)
   (set (p :ypos) y))
 
-(defn left [p]
+(defn right [p]
   (if (< (p :xpos) (- (p :cols) 1))
     (set (p :xpos) (+ (p :xpos) 1))))
 
-(defn right [p]
+(defn left [p]
   (if (> (p :xpos) 0)
     (set (p :xpos) (- (p :xpos) 1))))
 
@@ -73,10 +73,15 @@
 (defn leftstampend [p c]
   (leftstamp p (- (p :cols) (p :xpos)) c))
 
-(defn rightstamp [p n c]
-  (for i 0 n (stamp p c) (right p)))
+(defn rightstamp [p n c &opt stamper]
+  (default stamper stamp)
+  (for i 0 n (stamper p c) (right p)))
 
-(defn downstamp [p n c]
+(defn rightstampend [p c]
+  (rightstamp p (- (p :cols) (p :xpos)) c))
+
+(defn downstamp [p n c &opt stamper]
+  (default stamper stamp)
   (for i 0 n (stamp p c) (down p)))
 
 (defn downstampend [p c]
@@ -87,3 +92,40 @@
    bp
    0 (+ 8 (* 8 pos)) (pathmap :width) 8 0 (* 8 pos)
    (clr 0) (clr 1) (clr 2)))
+
+(defn mkbtprnt [pm]
+  (monolith/btprnt-new
+   (pm :width)
+   (pm :height)))
+
+(defn bpwrite [bp paths pm]
+  (monolith/btprnt-wraptext
+   bp
+   (paths :font)
+   @(0 0 (pm :width) (pm :height))
+   0 0
+   (apply string/from-bytes
+          (map (fn (x) (+ x 32)) (pm :map)))))
+
+(defn colorit [pm bp glimmer]
+  (for i 0 (pm :rows)
+    (colorrow pm
+              bp
+              (glimmer (% i (length glimmer)))
+              i)))
+
+(defn getstamp [p]
+  ((p :map) (+ (* (p :ypos) (p :cols)) (p :xpos))))
+
+
+# IN PROGRESS
+(defn pickstamp [p c] c)
+
+(defn smartstamp [p c]
+  (stamp p (pickstamp p c)))
+
+(defn smartrightstamp [p n c]
+  (rightstamp p n c smartstamp))
+
+(defn smartdownstamp [p n c]
+  (downstamp p n c smartstamp))

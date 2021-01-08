@@ -95,19 +95,19 @@
   (def pathmap (data :pathmap))
   (paths/moveto pathmap 8 1)
   (paths/stamp pathmap paths/bulb-e-empty)
-  (paths/left pathmap)
-  (paths/leftstamp pathmap 8 paths/road-empty)
+  (paths/right pathmap)
+  (paths/rightstamp pathmap 8 paths/road-empty)
   (paths/stamp pathmap paths/turn-sw-empty)
   (paths/down pathmap)
   (paths/downstamp pathmap 8 paths/wall-empty)
   (paths/stamp pathmap paths/turn-ne-empty)
-  (paths/left pathmap)
-  (paths/leftstampend pathmap paths/road-empty)
+  (paths/right pathmap)
+  (paths/rightstampend pathmap paths/road-empty)
 
   (paths/moveto pathmap 7 2)
   (paths/stamp pathmap paths/bulb-e-empty)
-  (paths/left pathmap)
-  (paths/leftstamp pathmap 8 paths/road-empty)
+  (paths/right pathmap)
+  (paths/rightstamp pathmap 8 paths/road-empty)
   (paths/stamp pathmap paths/turn-sw-empty)
   (paths/down pathmap)
   (paths/downstampend pathmap paths/wall-empty)
@@ -115,14 +115,15 @@
 
   (paths/moveto pathmap 5 3)
   (paths/stamp pathmap paths/bulb-e-empty)
-  (paths/left pathmap)
-  (paths/leftstamp pathmap 8 paths/road-empty)
+  (paths/right pathmap)
+  (paths/rightstamp pathmap 8 paths/road-empty)
   (paths/stamp pathmap paths/turn-sw-empty)
   (paths/down pathmap)
   (paths/downstamp pathmap 8 paths/wall-empty)
   (paths/stamp pathmap paths/turn-nw-empty)
-  (paths/right pathmap)
-  (paths/rightstamp pathmap 4 paths/road-empty)
+
+  (paths/left pathmap)
+  (paths/leftstamp pathmap 4 paths/road-empty)
   (paths/stamp pathmap paths/bulb-e-empty)
 
   (monolith/btprnt-wraptext
@@ -161,7 +162,7 @@
   (init data)
   (for i 0 (* 20 fps) (render data)))
 
-# testing...
+# # testing...
 # (gfx-init)
 # (var data (mkdata))
 # (init data)
