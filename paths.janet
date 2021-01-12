@@ -21,6 +21,9 @@
 (def weave-ee-under 12)
 (def weave-fe-under 8)
 
+(def weave-ee-over 11)
+(def weave-ef-over 10)
+
 (def term-e-filled "1")
 (def term-e-empty "2")
 (def term-w-filled "-")
@@ -119,14 +122,16 @@
 # IN PROGRESS
 
 (def pathstates
-  @{
-    wall-empty
-      @{empty wall-empty
-        wall-empty wall-empty
-        road-empty weave-ee-under
-        road-filled weave-fe-under
-       }
-})
+  @{wall-empty
+    @{empty wall-empty
+      wall-empty wall-empty
+      road-empty weave-ee-under
+      road-filled weave-fe-under}
+    road-empty
+    @{empty road-empty
+      road-empty road-empty
+      wall-empty weave-ee-over
+      wall-filled weave-ef-over}})
 
 (defn pickstamp [p c]
   (def s
