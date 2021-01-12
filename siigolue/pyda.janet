@@ -40,8 +40,21 @@
   (paths/moveto pm 8 3)
   (paths/stamp pm paths/bulb-n-empty)
   (paths/down pm)
-  (paths/smartdownstamp pm 5 paths/wall-empty)
-  (paths/stamp pm paths/bulb-s-empty))
+  (paths/smartdownstamp pm 10 paths/wall-empty)
+  (paths/stamp pm paths/bulb-s-empty)
+
+  # vein 4
+  (paths/moveto pm 5 9)
+  (paths/stamp pm paths/bulb-e-empty)
+  (paths/right pm)
+  (paths/smartrightstamp pm 7 paths/road-empty)
+  (paths/stamp pm paths/turn-sw-empty)
+
+  (paths/down pm)
+  (paths/downstamp pm 8 paths/wall-empty)
+  (paths/stamp pm paths/bulb-s-empty)
+
+)
 
 (defn mkdata []
   (var p @{})
@@ -130,7 +143,6 @@
    @[0 0 0]
    fg bg (skript/bless ((data :koan) 2)) matter/empty data)
 
-
 )
 
 (defn render-file []
@@ -147,4 +159,4 @@
   (draw data)
   (monolith/gfx-write-png "pyda.png"))
 
-#(test)
+(test)

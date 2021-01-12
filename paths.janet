@@ -18,10 +18,8 @@
 (def turn-se-filled 27)
 (def turn-se-empty 28)
 
-(def weave-ef-over "*")
-(def weave-ef-under ")")
-(def weave-ee-over "+")
-(def weave-ee-under ",")
+(def weave-ee-under 12)
+(def weave-fe-under 8)
 
 (def term-e-filled "1")
 (def term-e-empty "2")
@@ -82,7 +80,7 @@
 
 (defn downstamp [p n c &opt stamper]
   (default stamper stamp)
-  (for i 0 n (stamp p c) (down p)))
+  (for i 0 n (stamper p c) (down p)))
 
 (defn downstampend [p c]
   (downstamp p (- (p :rows) (p :ypos)) c))
@@ -119,7 +117,23 @@
 
 
 # IN PROGRESS
-(defn pickstamp [p c] c)
+
+(def pathstates
+  @{
+    wall-empty
+      @{empty wall-empty
+        wall-empty wall-empty
+        road-empty weave-ee-under
+        road-filled weave-fe-under
+       }
+})
+
+(defn pickstamp [p c]
+  (def s
+    (if (nil? (pathstates c))
+      nil
+      ((pathstates c) (getstamp p))))
+  (if (nil? s) c s))
 
 (defn smartstamp [p c]
   (stamp p (pickstamp p c)))
