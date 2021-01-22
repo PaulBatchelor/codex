@@ -56,6 +56,55 @@
 
 )
 
+(defn stroll [bp s]
+  (def main
+    @[0 0
+      (monolith/btprnt-width bp)
+      (monolith/btprnt-height bp)])
+
+  (monolith/btprnt-scrolltext
+   bp
+   ((s :skrp) :bpfont)
+   main
+   (math/floor (* (s :shift) (main 2))) 0
+   (skript/curse @[0 1 2 3]))
+
+  (monolith/btprnt-scrolltext
+   bp
+   ((s :skrp) :bpfont)
+   main
+   (math/floor (* (s :shift) (main 2) 2.1)) 8
+   (skript/curse @[4 5 6 7]))
+
+  (monolith/btprnt-scrolltext
+   bp
+   ((s :skrp) :bpfont)
+   main
+   (math/floor (* (s :shift) (main 2) 1.3)) (* 8 5)
+   (skript/curse @[8 9 10 11]))
+
+
+  (def s (math/floor (+ (* (s :shift) 10) 10)))
+  (monolith/btprnt-rect-filled
+   bp main
+   (math/floor (- (* (main 2) 0.5) (* s 0.5)))
+   (math/floor (- (* (main 3) 0.5) (* s 0.5)))
+   s s 1)
+)
+
+(defn openbox [bp s]
+  (def main
+    @[0 0
+      (monolith/btprnt-width bp)
+      (monolith/btprnt-height bp)])
+  (def s (math/floor (+ (* (s :shift) 10) 10)))
+  (monolith/btprnt-rect
+   bp main
+   (math/floor (- (* (main 2) 0.5) (* s 0.5)))
+   (math/floor (- (* (main 3) 0.5) (* s 0.5)))
+   s s 1)
+)
+
 (defn mkdata []
   (var p @{})
   (put p :paths (skript/mkfont "../pathways.txt" 8 16))
@@ -127,21 +176,21 @@
    (data :skrp)
    (matter/bottomleft 5 5 2 4)
    @[0 0 0]
-   fg bg (skript/bless ((data :koan) 0)) matter/empty data)
+   fg bg (skript/bless ((data :koan) 0)) openbox data)
 
 (matter/window
    skript/charboxborder-v2
    (data :skrp)
    (matter/bottomleft 7 7 15 3)
    @[0 0 0]
-   fg bg (skript/bless ((data :koan) 1)) matter/empty data)
+   fg bg (skript/bless ((data :koan) 1)) openbox data)
 
 (matter/window
    skript/charboxborder-v2
    (data :skrp)
    (matter/topleft 8 8 15 5)
    @[0 0 0]
-   fg bg (skript/bless ((data :koan) 2)) matter/empty data)
+   fg bg (skript/bless ((data :koan) 2)) stroll data)
 
 )
 
@@ -159,4 +208,4 @@
   (draw data)
   (monolith/gfx-write-png "pyda.png"))
 
-(test)
+#(test)
