@@ -68,6 +68,37 @@
    s s 1)
 )
 
+(defn slabit [p]
+  (def bp (p :slab))
+  (def skrp (p :skrp))
+  (def koan (p :koan))
+  (def main
+    @[0 0
+      (monolith/btprnt-width bp)
+      (monolith/btprnt-height bp)])
+  (monolith/btprnt-wraptext
+   bp (skrp :bpfont)
+   main
+   0 8
+   (string
+    (skript/cursebless (koan 0))
+    (skript/space)
+    (skript/cursebless (koan 1))
+    (skript/space)
+    (skript/cursebless (koan 2))
+    (skript/space)
+    (skript/cursebless (koan 3))
+    (skript/space)
+    (skript/cursebless (koan 4))
+    (skript/space)
+    (skript/cursebless (koan 5))
+    (skript/space)
+))
+
+  # (pp (skript/curse (skript/bless (koan 0))))
+  # (pp (skript/curse @[11 0 25 7]))
+)
+
 (defn germinate []
   (var p @{})
 
@@ -76,7 +107,7 @@
   (put p :koan
      (string/split
       " "
-      "lazheewich zhozh zhesh mow ryp ceeso."))
+      "lazheewich zhozh zhesh mow ryp ceeso"))
   (put p :skrp (skript/mkfont "../a.txt" 8 8))
   (put p :pm (paths/mkpathmap))
   (put p :pm-bp (paths/mkbtprnt (p :pm)))
@@ -84,77 +115,27 @@
   (paths/bpwrite (p :pm-bp) (p :paths) (p :pm))
   (put p :shift 0)
   (put p :speed 0.008)
+
+  (put p :slab
+     (monolith/btprnt-new hearth/width (- hearth/height 8)))
+  (slabit p)
   p)
 
 (defn draw [data]
   (def glimmer (spektrum/shift (data :rainbow) (data :shift)))
   (monolith/gfx-fill 255 255 255)
   (spektrum/border glimmer 24 32)
- (skript/utter-blackletter
-  (data :skrp)
-  ((data :koan) 0)
-  8 16 27)
+  (monolith/gfx-btprnt-stencil
+   (data :slab)
+   0 0
+   (monolith/btprnt-width (data :slab))
+   (monolith/btprnt-height (data :slab))
+   0 0
+   0 0 0)
 
- (skript/utter-blackletter
-  (data :skrp)
-  ((data :koan) 1)
-  8 (- hearth/height (+ 16 8)) 27)
-
-
-  (skript/utter-blackletter
-   (data :skrp)
-   ((data :koan) 2)
-   (- hearth/width (* (+ (length ((data :koan) 2)) 2) 8))
-   16
-   27)
-
-  (skript/utter-blackletter
-   (data :skrp)
-   ((data :koan) 3)
-   (- hearth/width (* (+ (length ((data :koan) 3)) 2) 8))
-   (- hearth/height (+ 16 8))
-   27)
-
-  (skript/utter-blackletter
-   (data :skrp)
-   ((data :koan) 4)
-   8
-   (/ hearth/height 2)
-   27)
-
-  (skript/utter-blackletter
-   (data :skrp)
-   ((data :koan) 5)
-   (- hearth/width (* (+ (length ((data :koan) 5)) 2) 8))
-   (/ hearth/height 2)
-   27)
-
-  # veins
-  (paths/colorit (data :pm) (data :pm-bp) glimmer)
-
-  (def bg (spektrum/rainbow-pastel 5))
-  (def fg (spektrum/rainbow-dark 5))
-
-  (matter/window
-   skript/charboxborder-v2
-   (data :skrp)
-   (matter/bottomleft 5 5 2 4)
-   @[0 0 0]
-   fg bg (skript/bless ((data :koan) 0)) openbox data)
-
-(matter/window
-   skript/charboxborder-v2
-   (data :skrp)
-   (matter/bottomleft 7 7 15 3)
-   @[0 0 0]
-   fg bg (skript/bless ((data :koan) 1)) openbox data)
-
-# (matter/window
-#    skript/charboxborder-v2
-#    (data :skrp)
-#    (matter/topleft 8 8 15 5)
-#    @[0 0 0]
-#    fg bg (skript/bless ((data :koan) 2)) stroll data)
+  # (def koan (data :koan))
+  # (skript/utter-blackletter (data :skrp) (koan 0) 0 16 27)
+  # (pp (skript/bless (koan 0)))
 )
 
 (defn test []

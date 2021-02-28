@@ -340,3 +340,14 @@ Glyphs to represent light. Light to represent glyphs.
 -##--##-
 --------
 --------
+
+31. Empty space
+
+--------
+--------
+--------
+--------
+--------
+--------
+--------
+--------

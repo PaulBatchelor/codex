@@ -177,3 +177,7 @@
 (defn curse [bytes]
   (apply string/from-bytes
          (map (fn (x) (+ x 32)) bytes)))
+
+(defn cursebless [str] (curse (bless str)))
+
+(defn space [] (curse @[31]))
