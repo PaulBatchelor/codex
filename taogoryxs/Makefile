@@ -4,7 +4,7 @@ IDENTITY=jatash
 
 default: test
 
-IDENTITY_AUX=$(IDENTITY).db
+#IDENTITY_AUX=$(IDENTITY).db
 
 include ../hearth.mk
 

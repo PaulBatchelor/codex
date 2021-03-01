@@ -173,6 +173,7 @@
   (put p :paths (skript/mkfont "../pathways.txt" 8 16))
   (put p :rainbow spektrum/rainbow1)
   (put p :pastel spektrum/rainbow-pastel)
+  (put p :dark spektrum/rainbow-dark)
   (put p :koan
      (string/split
       " "
@@ -197,16 +198,102 @@
                      (p :slab) (p :slab-main)
                      3 1
                      2 0))
+  (put p :slab-center-square (monolith/btprnt-grid
+                       (p :slab) (p :slab-main)
+                       3 3
+                       1 1))
   (slabit p)
   (veins (p :pm))
   (paths/bpwrite (p :pm-bp) (p :paths) (p :pm))
+
+  (put p :cbox (monolith/btprnt-new
+                ((p :slab-center-square) 2)
+                ((p :slab-center-square) 3)))
   p)
+
+(defn pacing-square [bp creg sqrpos]
+  (var sqr-xpos 0)
+  (var sqr-ypos 0)
+
+  (cond
+    (< sqrpos 1)
+    (do
+      (set sqr-xpos (math/floor (* (% sqrpos 1) (- (creg 2) 8))))
+      (set sqr-ypos 0))
+    (< sqrpos 2)
+    (do
+      (set sqr-xpos (- (creg 2) 8))
+      (set sqr-ypos
+           (math/floor (* (% sqrpos 1) (- (creg 3) 8)))))
+    (< sqrpos 3)
+    (do
+      (set sqr-xpos
+           (math/floor (* (- 1 (% sqrpos 1)) (- (creg 3) 8))))
+      (set sqr-ypos (- (creg 3) 8)))
+    (< sqrpos 4)
+    (do
+      (set sqr-xpos 0)
+      (set sqr-ypos
+           (math/floor (* (- 1 (% sqrpos 1)) (- (creg 3) 8))))))
+
+  (monolith/btprnt-rect-filled
+   bp creg
+   sqr-xpos sqr-ypos
+   8 8 0)
+)
+
+(defn mkcenterpiece [p]
+  (def bp (p :cbox))
+  (def main
+    @[0 0 (monolith/btprnt-width bp) (monolith/btprnt-height bp)])
+
+  (def creg (monolith/btprnt-centerbox bp main 56 56))
+  (var sqr-xpos 0)
+  (var sqr-ypos 0)
+
+  (monolith/btprnt-rect-filled bp main
+                               (creg 0) (creg 1)
+                               (creg 2) (creg 3)
+                               1)
+
+  (pacing-square bp creg (* (p :shift) 4))
+  (pacing-square bp creg (* (% (+ (p :shift) 0.5) 1) 4))
+  #(cond
+  #  (< sqrpos 1)
+  #  (do
+  #    (set sqr-xpos (math/floor (* (% sqrpos 1) (- (creg 2) 8))))
+  #    (set sqr-ypos 0))
+  #  (< sqrpos 2)
+  #  (do
+  #    (set sqr-xpos (- (creg 2) 8))
+  #    (set sqr-ypos
+  #         (math/floor (* (% sqrpos 1) (- (creg 3) 8)))))
+  #  (< sqrpos 3)
+  #  (do
+  #    (set sqr-xpos
+  #         (math/floor (* (- 1 (% sqrpos 1)) (- (creg 3) 8))))
+  #    (set sqr-ypos (- (creg 3) 8)))
+  #  (< sqrpos 4)
+  #  (do
+  #    (set sqr-xpos 0)
+  #    (set sqr-ypos
+  #         (math/floor (* (- 1 (% sqrpos 1)) (- (creg 3) 8))))))
+
+  #(monolith/btprnt-rect-filled
+  # bp creg
+  # sqr-xpos sqr-ypos
+  # 8 8 0)
+)
 
 (defn draw [data]
   (def glimmer (spektrum/shift (data :rainbow) (data :shift)))
   (def pastel-glimmer (spektrum/shift (data :pastel) (data :shift)))
 
   (def bands (map pastel-glimmer @[5 4 5 4 3]))
+  (def bg ((data :pastel) 5))
+  (def fg ((data :dark) 5))
+
+  (def cnt (data :slab-center-square))
   (monolith/gfx-fill 255 255 255)
   (spektrum/border glimmer 24 32)
 
@@ -220,10 +307,39 @@
    0 0
    0 0 0)
 
+  (monolith/gfx-rect-fill
+   (cnt 0)
+   (+ (cnt 1) 8)
+   (cnt 2)
+   (cnt 3)
+   (bg 0)
+   (bg 1)
+   (bg 2))
+
+  (mkcenterpiece data)
+
+  (monolith/gfx-btprnt-stencil
+   (data :cbox)
+   (cnt 0)
+   (+ (cnt 1) 8)
+   (monolith/btprnt-width (data :cbox))
+   (monolith/btprnt-height (data :cbox))
+   0 0
+   (fg 0) (fg 1) (fg 2))
+
   # (def koan (data :koan))
   # (skript/utter-blackletter (data :skrp) (koan 0) 0 16 27)
   # (pp (skript/bless (koan 0)))
 )
+
+(defn render-file []
+  (def p (germinate))
+  (draw p)
+  (monolith/gfx-write-png "pyda.png")
+  (for i 0 (* 20 60)
+    (hearth/render-block draw p 44100 60 i)
+    #(set (p :shift) (% (+ (p :shift) (p :speed)) 1))
+    (set (p :shift) (monolith/chan-get 0))))
 
 (defn test []
   (hearth/gfx-init)
@@ -231,4 +347,4 @@
   (draw data)
   (monolith/gfx-write-png "jatash.png"))
 
-(test)
+#(test)
