@@ -181,3 +181,5 @@
 (defn cursebless [str] (curse (bless str)))
 
 (defn space [] (curse @[31]))
+(defn dot [] (curse @[27]))
+(defn parallel [] (curse @[29]))

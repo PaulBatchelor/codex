@@ -4,56 +4,90 @@
 (import ../paths)
 (import ../hearth)
 
-(defn veins [pm]
+(defn snake
+  [pm x y
+  bulb-e
+  road
+  turn-sw
+  turn-nw
+  turn-se
+  turn-ne
+  bulb-w]
+
   # vein 1
-  (paths/moveto pm 1 2)
-  (paths/stamp pm paths/bulb-e-filled)
+  (paths/moveto pm x y)
+  (paths/stamp pm bulb-e)
 
   (paths/right pm)
-  (paths/rightstamp pm 4 paths/road-filled)
-
-  (paths/stamp pm paths/turn-sw-filled)
+  (paths/rightstamp pm 6 road)
+  (paths/stamp pm turn-sw)
 
   (paths/down pm)
-  (paths/downstamp pm 8 paths/wall-filled)
+  (paths/stamp pm turn-nw)
 
-  (paths/stamp pm paths/turn-ne-filled)
+  (paths/left pm)
+  (paths/leftstamp pm 6 road)
+  (paths/stamp pm turn-se)
+
+  (paths/down pm)
+  (paths/stamp pm turn-ne)
+
+  # again
+
   (paths/right pm)
-  (paths/rightstamp pm 4 paths/road-filled)
-
-  (paths/stamp pm paths/turn-sw-filled)
+  (paths/rightstamp pm 6 road)
+  (paths/stamp pm turn-sw)
 
   (paths/down pm)
-  (paths/downstamp pm 8 paths/wall-filled)
+  (paths/stamp pm turn-nw)
 
-  (paths/stamp pm paths/bulb-s-filled)
+  (paths/left pm)
+  (paths/leftstamp pm 6 road)
+  (paths/stamp pm turn-se)
 
-  # vein 2
-  (paths/moveto pm 3 6)
-  (paths/stamp pm paths/bulb-e-empty)
+  (paths/down pm)
+  (paths/stamp pm turn-ne)
+
+
+  # again
+
   (paths/right pm)
-  (paths/smartrightstamp pm 5 paths/road-empty)
-  (paths/stamp pm paths/bulb-w-empty)
+  (paths/rightstamp pm 6 road)
+  (paths/stamp pm turn-sw)
 
-  # vein 3
-  (paths/moveto pm 8 3)
-  (paths/stamp pm paths/bulb-n-empty)
   (paths/down pm)
-  (paths/smartdownstamp pm 10 paths/wall-empty)
-  (paths/stamp pm paths/bulb-s-empty)
+  (paths/stamp pm turn-nw)
 
-  # vein 4
-  (paths/moveto pm 5 9)
-  (paths/stamp pm paths/bulb-e-empty)
+  (paths/left pm)
+  (paths/leftstamp pm 6 road)
+  (paths/stamp pm turn-se)
+
+  (paths/down pm)
+  (paths/stamp pm turn-ne)
+
+  # again
   (paths/right pm)
-  (paths/smartrightstamp pm 7 paths/road-empty)
-  (paths/stamp pm paths/turn-sw-empty)
+  (paths/rightstamp pm 6 road)
+  (paths/stamp pm bulb-w))
 
-  (paths/down pm)
-  (paths/downstamp pm 8 paths/wall-empty)
-  (paths/stamp pm paths/bulb-s-empty)
+(defn veins [pm]
+  (snake pm 8 0
+         paths/bulb-e-filled
+         paths/road-filled
+         paths/turn-sw-filled
+         paths/turn-nw-filled
+         paths/turn-se-filled
+         paths/turn-ne-filled
+         paths/bulb-w-filled)
 
-)
+  (snake pm 8 23
+         paths/bulb-e-empty
+         paths/road-empty
+         paths/turn-sw-empty
+         paths/turn-nw-empty
+         paths/turn-se-empty
+         paths/turn-ne-empty
+         paths/bulb-w-empty))
 
 (defn openbox [bp s]
   (def main
@@ -68,42 +102,77 @@
    s s 1)
 )
 
+(defn mkword [koan n &opt punc]
+  (default punc (skript/dot))
+  (string
+   (skript/cursebless (koan n))
+   punc))
+
+(defn mksent [koan s &opt punc]
+  (reduce (fn [x1 x2] (string x1 (mkword koan x2 punc))) "" s))
+
 (defn slabit [p]
   (def bp (p :slab))
   (def skrp (p :skrp))
   (def koan (p :koan))
-  (def main
-    @[0 0
-      (monolith/btprnt-width bp)
-      (monolith/btprnt-height bp)])
+  (def main (p :slab-main))
+
+  (def left (p :slab-left))
+  (def right (p :slab-right))
+
   (monolith/btprnt-wraptext
    bp (skrp :bpfont)
-   main
+   left
    0 8
-   (string
-    (skript/cursebless (koan 0))
-    (skript/space)
-    (skript/cursebless (koan 1))
-    (skript/space)
-    (skript/cursebless (koan 2))
-    (skript/space)
-    (skript/cursebless (koan 3))
-    (skript/space)
-    (skript/cursebless (koan 4))
-    (skript/space)
-    (skript/cursebless (koan 5))
-    (skript/space)
-))
+   (mksent koan @[
+                  0 1 2
+                  3 0 1
+                  2 3 0
+                  1 2 3
+                  0 1 2
+                  0 1 2
+                  3 0 1
+                  2 3 0
+                  1 2 3
+                  0 1 2
+                  0 1 2
+                  3 0 1
+                  2 3 0
+                  1 2 3
+                  0 1 2
+                 ]))
 
-  # (pp (skript/curse (skript/bless (koan 0))))
-  # (pp (skript/curse @[11 0 25 7]))
-)
+  (monolith/btprnt-wraptext
+   bp (skrp :bpfont)
+   right
+   0 8
+   (mksent koan @[
+                  4 5 1
+                  3 3 1
+                  4 5 1
+                  2 3 1
+                  4 5 1
+                  0 5 1
+                  4 5 1
+                  3 3 1
+                  4 5 1
+                  2 3 1
+                  4 5 1
+                  0 5 1
+                  4 5 1
+                  3 3 1
+                  4 5 1
+                  2 3 1
+                  4 5 1
+                  0 5 1
+                 ] (skript/parallel))))
 
 (defn germinate []
   (var p @{})
 
   (put p :paths (skript/mkfont "../pathways.txt" 8 16))
   (put p :rainbow spektrum/rainbow1)
+  (put p :pastel spektrum/rainbow-pastel)
   (put p :koan
      (string/split
       " "
@@ -111,20 +180,38 @@
   (put p :skrp (skript/mkfont "../a.txt" 8 8))
   (put p :pm (paths/mkpathmap))
   (put p :pm-bp (paths/mkbtprnt (p :pm)))
-  (veins (p :pm))
-  (paths/bpwrite (p :pm-bp) (p :paths) (p :pm))
   (put p :shift 0)
   (put p :speed 0.008)
 
   (put p :slab
      (monolith/btprnt-new hearth/width (- hearth/height 8)))
+  (put p :slab-main
+       @[0 0
+         (monolith/btprnt-width (p :slab))
+         (monolith/btprnt-height (p :slab))])
+  (put p :slab-left (monolith/btprnt-grid
+                     (p :slab) (p :slab-main)
+                     3 1
+                     0 0))
+  (put p :slab-right (monolith/btprnt-grid
+                     (p :slab) (p :slab-main)
+                     3 1
+                     2 0))
   (slabit p)
+  (veins (p :pm))
+  (paths/bpwrite (p :pm-bp) (p :paths) (p :pm))
   p)
 
 (defn draw [data]
   (def glimmer (spektrum/shift (data :rainbow) (data :shift)))
+  (def pastel-glimmer (spektrum/shift (data :pastel) (data :shift)))
+
+  (def bands (map pastel-glimmer @[5 4 5 4 3]))
   (monolith/gfx-fill 255 255 255)
   (spektrum/border glimmer 24 32)
+
+  (paths/colorit (data :pm) (data :pm-bp) bands)
+
   (monolith/gfx-btprnt-stencil
    (data :slab)
    0 0
