@@ -22,7 +22,7 @@ kozhaipuch jugenef chet. zaezaj segezh myr refaz mycaita
 ceezha. jahaif geekaicaet zi syhaeve zenyvum reewai tis
 cheewach ropu shizh.
 * saif
-@!(slab "jatash")!@
+@!(glimmer "jatash")!@
 ** gajoja
 nolaeg kaigesozh leeseefog sail ricai hazaib pyhyh baluwees
 zhehee taet diraen bom taih gik zaebabaev taiw sheegif
