@@ -2,12 +2,14 @@
 * shev
 ** sonaek
 kado sosh bimalez meecyc shuf laegih shaik shisideed nevuv
-mo kuhaipeb rohynee conifyd daeh hyd naebunih wecywi.
+mo kuhaipeb @!(ref "magopau" "rohyneel")!@ conifyd daeh
+hyd naebunih wecywi.
 kyzazhul jun wavaev chom pukeh kee chaich modashaet tam
 zefywain zaibee ky. haefos gaibotyt choragaid beezaib meen
-geruf laesh kaikytop vyro wom shob kohigaik ko zae gif
+geruf laesh @!(ref "siigolue" "kaikytop vyro wom")!@ shob
+kohigaik ko zae gif
 keebugoch faip. pajaec saewepit baech cifaec cogee fagachu
-ceecedyg lyj raichaik gizhy seer felees.
+ceecedyg @!(colorshuf "lyj raichaik gizhy seer felees")!@...
 ** rarifaen
 chuw laimee loral kae miteegee ceesh waet jaishipon lovigop
 cheen zhacheeg fafeen zaesyn shov fotyruzh rer zebufeew
