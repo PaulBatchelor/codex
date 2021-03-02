@@ -1,0 +1,144 @@
+#+PROPERTY: header-args:scheme :results silent :noweb yes
+
+#+NAME: loader
+#+BEGIN_SRC scheme
+(monolith:load "ugens.scm")
+(monolith:load "codex/hearth.scm")
+#+END_SRC
+
+#+BEGIN_SRC scheme
+(knobkit-create)
+#+END_SRC
+
+#+BEGIN_SRC scheme
+(monolith:start)
+#+END_SRC
+
+#+BEGIN_SRC scheme
+(monolith:state-open (monolith:mkpath "codex/siigolue/jatash.db"))
+(knobkit-load "wt5-exp1")
+(monolith:state-close)
+#+END_SRC
+
+#+NAME: jatash.scm
+#+BEGIN_SRC scheme :tangle jatash.scm
+<<loader>>
+(define (init) '())
+<<jatash>>
+<<render>>
+#+END_SRC
+
+#+NAME: jatash
+#+BEGIN_SRC scheme
+(define (mkphs)
+    (phasor (randh 0.1 0.5 0.2) (param 0)))
+#+END_SRC
+
+#+NAME: jatash
+#+BEGIN_SRC scheme
+(define (mkbr ph)
+  (lambda () (biramp (ph) (randi 0.1 0.5 0.4))))
+#+END_SRC
+
+#+NAME: jatash
+#+BEGIN_SRC scheme
+(define (mksineft cabstart)
+  (let
+    ((ft (monolith:nextfree cabstart)))
+    (gen_sine (ftnew 8192))
+    (regset zz ft)
+    ft))
+#+END_SRC
+
+#+NAME: jatash
+#+BEGIN_SRC scheme
+(define (mksinesumft cabstart)
+  (let
+    ((ft (monolith:nextfree cabstart)))
+    (gen_sinesum (ftnew 8192) "1 1 0 1 0 1")
+    (regset zz ft)
+    ft))
+#+END_SRC
+
+#+NAME: jatash
+#+BEGIN_SRC scheme
+(define (jatash-synth)
+  (let* ((ph (monolith:mkcab mkphs 0))
+        (c (monolith:mkcab (mkbr (cabgetf ph)) ph))
+        (ft1 (mksineft c))
+        (ft2 (mksinesumft ft1)))
+    (cabget c)
+    (bdup)
+    (monset zz 0)
+    (scale zz 30 100)
+    (fmpair2
+     zz
+     (param 1)
+     (param 1)
+     (port (randh 0 3 11) (param 0.001))
+     (randi (param 0) (param 0.8) (randh 1 20 1))
+     (reggetf ft2)
+     (reggetf ft1))
+    (mul zz 0.1)
+    (maygate (metro 2) (param 0.75) (param 0))
+    (port zz 0.05)
+    (mul zz zz)
+
+    (randh -0.8 0.8 1000)
+    (bitnoise (randh 100 1000 0.2) (param 1))
+    (mul zz 0.9)
+    (add zz zz)
+    (scale (cabget c) 500 1000)
+    (butbp zz zz 100)
+    (scale (cabget c) 0.3 1)
+    (mul zz zz)
+    (add zz zz)
+
+    (scale (cabget ph)
+      (param 500)
+      (randi 1000 2000 4))
+    (sine zz 0.4)
+    (cabget ph)
+    (expmap zz 2)
+    (phsclk zz 24)
+    (tenvx zz 0.001 0.001 0.001)
+    (mul zz zz)
+
+    (add zz zz)
+
+    (bdup)
+    (jcrev zz)
+    (add zz zz)
+
+    (regclr ft1)
+    (regclr ft2)
+    (cabclr c)
+    (cabclr ph)))
+#+END_SRC
+
+#+NAME: jatash
+#+BEGIN_SRC scheme
+(define (jatash)
+  (init)
+  (jatash-synth))
+#+END_SRC
+
+#+NAME: render
+#+BEGIN_SRC scheme
+(hearth:render "jatash" jatash)
+#+END_SRC
+
+Play:
+
+#+BEGIN_SRC scheme
+(monolith:start)
+#+END_SRC
+
+#+BEGIN_SRC scheme
+<<loader>>
+<<jatash>>
+(define (run)
+  (jatash-synth)
+  (out zz))
+#+END_SRC
+

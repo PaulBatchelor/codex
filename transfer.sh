@@ -8,4 +8,5 @@ rsync -Rrvt \
       fogozue/heesh.png fogozue/heesh.mp4 \
       magopau/cuw.png magopau/cuw.mp4 \
       siigolue/pyda.png siigolue/pyda.mp4 \
+      taogoryxs/jatash.png taogoryxs/jatash.mp4 \
       artifacts

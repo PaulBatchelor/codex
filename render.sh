@@ -6,3 +6,4 @@ cd xodayjao; sh render.sh; cd ..
 cd fogozue; sh render.sh; cd ..
 cd magopau; sh render.sh; cd ..
 cd siigolue; sh render.sh; cd ..
+cd taogoryxs; sh render.sh; cd ..

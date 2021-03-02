@@ -285,6 +285,34 @@
   # 8 8 0)
 )
 
+(defn colorsquare [p x y w h clr]
+  (monolith/gfx-btprnt-stencil
+   (p :slab)
+   x y
+   w h
+   x y
+   (clr 0) (clr 1) (clr 2)))
+
+(defn colorglyphbox [p x y ncol nrow clr]
+  (colorsquare
+   p
+   (* x 8) (* y 8)
+   (* 8 ncol) 8 clr)
+  (colorsquare
+   p
+   (* x 8) (* (+ y (- nrow 1)) 8)
+   (* 8 ncol) 8 clr)
+  (colorsquare
+   p
+   (* x 8) (* y 8)
+   8 (* 8 nrow) clr)
+
+  (colorsquare
+   p
+   (* (+ x (- ncol 1)) 8) (* y 8)
+   8 (* 8 nrow) clr)
+)
+
 (defn draw [data]
   (def glimmer (spektrum/shift (data :rainbow) (data :shift)))
   (def pastel-glimmer (spektrum/shift (data :pastel) (data :shift)))
@@ -307,6 +335,28 @@
    0 0
    0 0 0)
 
+  (colorsquare data 0 8 16 16 (glimmer 0))
+  (colorsquare data 16 24 16 16 (glimmer 1))
+  (colorsquare data 32 40 16 16 (glimmer 2))
+  (colorsquare data 48 56 16 16 (glimmer 3))
+
+  (colorsquare data (* 22 8) (* 29 8) 16 16 (glimmer 0))
+  (colorsquare data (* 20 8) (* 27 8) 16 16 (glimmer 1))
+  (colorsquare data (* 18 8) (* 25 8) 16 16 (glimmer 2))
+  (colorsquare data (* 16 8) (* 23 8) 16 16 (glimmer 3))
+
+
+  (colorsquare data (* 3 8) (* 10 8) 8 (* 8 8) (glimmer 4))
+  (colorsquare data (* 20 8) (* 2 8) 8 (* 8 8) (glimmer 4))
+
+
+  (colorglyphbox data 3 20 3 3 (glimmer 3))
+
+  (colorglyphbox data 19 16 3 3 (glimmer 2))
+
+  (colorglyphbox data 0 24 5 5 (glimmer 1))
+  (colorglyphbox data 2 26 5 5 (glimmer 4))
+
   (monolith/gfx-rect-fill
    (cnt 0)
    (+ (cnt 1) 8)
@@ -325,26 +375,18 @@
    (monolith/btprnt-width (data :cbox))
    (monolith/btprnt-height (data :cbox))
    0 0
-   (fg 0) (fg 1) (fg 2))
-
-  # (def koan (data :koan))
-  # (skript/utter-blackletter (data :skrp) (koan 0) 0 16 27)
-  # (pp (skript/bless (koan 0)))
-)
+   (fg 0) (fg 1) (fg 2)))
 
 (defn render-file []
   (def p (germinate))
   (draw p)
-  (monolith/gfx-write-png "pyda.png")
+  (monolith/gfx-write-png "jatash.png")
   (for i 0 (* 20 60)
     (hearth/render-block draw p 44100 60 i)
-    #(set (p :shift) (% (+ (p :shift) (p :speed)) 1))
     (set (p :shift) (monolith/chan-get 0))))
 
 (defn test []
   (hearth/gfx-init)
   (def data (germinate))
   (draw data)
-  (monolith/gfx-write-png "jatash.png"))
-
-#(test)
+  (monolith/gfx-write-png "out.png"))
