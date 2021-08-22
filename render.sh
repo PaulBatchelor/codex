@@ -1,9 +1,24 @@
-cd xuapanaos; sh render.sh; cd ..
-cd shqfamauzk; sh render.sh; cd ..
-cd naoyuguozk; sh render.sh; cd ..
-cd xaothuthizk; sh render.sh; cd ..
-cd xodayjao; sh render.sh; cd ..
-cd fogozue; sh render.sh; cd ..
-cd magopau; sh render.sh; cd ..
-cd siigolue; sh render.sh; cd ..
-cd taogoryxs; sh render.sh; cd ..
+function render {
+cd $1
+if [[ $? -ne 0 ]]
+then
+    exit 1
+fi
+sh render.sh
+if [[ $? -ne 0 ]]
+then
+    cd ..
+    exit 1
+fi
+cd ..
+}
+
+render xuapanaos
+render shqfamauzk
+render naoyuguozk
+render xaothuthizk
+render xodayjao
+render fogozue
+render magopau
+render siigolue
+render taogoryxs
