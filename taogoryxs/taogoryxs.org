@@ -19,8 +19,9 @@ leeleevysh teboshoch. fuj gala kaish topa zacoja maigumeep
 cevee pyvagej zunic lizhigaik muzhymeeh taebo. dir shydal
 dezu zaes zywuzh chanae pog zyzhechyd goz zugev lenai kai.
 * foraij
-saekym buzaere shyr naic sydipu mew zhu lucybaesh
-kozhaipuch jugenef chet. zaezaj segezh myr refaz mycaita
+saekym @!(ref "paupaner" "buzaere")!@ shyr naic sydipu
+mew zhu lucybaesh kozhaipuch jugenef chet; zaezaj
+segezh myr refaz mycaita
 ceezha. jahaif geekaicaet zi syhaeve zenyvum reewai tis
 cheewach ropu shizh.
 * saif
@@ -56,4 +57,12 @@ shuhaiweer vechaezaesh
 vair zivichij shegane gironom gynush lichuc taepac gah lec
 ti vemaim zhog caef ve. laweel pikib chip lashozh pebuv bu
 cet sonosh puw zejubaem vypaisail vaesh shac dai vaich
-haij.
+haij...
+
+...
+
+
+...
+
+
+...

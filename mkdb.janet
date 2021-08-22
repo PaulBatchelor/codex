@@ -19,6 +19,9 @@
 (ww-add-link "taogoryxs" "taogoryxs/taogoryxs.org")
 (ww-add-link "magopau" "magopau/magopau.org")
 (ww-add-link "siigolue" "siigolue/siigolue.org")
+(ww-add-link "qipacal" "qipacal/qipacal.org")
+(ww-add-link "kqpangiizk" "kqpangiizk/kqpangiizk.org")
+(ww-add-link "paupaner" "paupaner/paupaner.org")
 
 # sync and close
 

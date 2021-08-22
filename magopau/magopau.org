@@ -1,7 +1,8 @@
 #+TITLE: magopau
 * sa
-pywam shoc wi chug keshapud. cheenuzoz gail feterif tinis
-hoz heef faewif shof beek zhaefiw. ziwozhig tucab zael
+pywam shoc wi @!(ref "kqpangiizk" "chug keshapud")!@.
+cheenuzoz gail feterif tinis
+hoz heef faewif shof beek zhaefiw? ziwozhig tucab zael
 kopeched daek. naimuw bereeshof zhyl pifefa maizhaepaip
 cazhug @!(colorshuf "wy geekaej hae beek")!@.
 
