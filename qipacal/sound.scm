@@ -441,7 +441,9 @@ loop fin
   (add zz zz)
   (mul zz 0.05)
   (lvl "butlp zz [rline 200 500 7]")
-  (add zz zz))
+  (add zz zz)
+  (cabget 1)
+  (bunhold zz))
 
 (define (mksound wav)
   (open-db-in-monolith)
