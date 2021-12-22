@@ -22,3 +22,4 @@ render fogozue
 render magopau
 render siigolue
 render taogoryxs
+render qipacal

@@ -9,4 +9,5 @@ rsync -Rrvt \
       magopau/cuw.png magopau/cuw.mp4 \
       siigolue/pyda.png siigolue/pyda.mp4 \
       taogoryxs/jatash.png taogoryxs/jatash.mp4 \
+      qipacal/rai.png qipacal/rai.mp4 \
       artifacts
