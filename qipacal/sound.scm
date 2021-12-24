@@ -18,53 +18,55 @@
   (sqlar:crateloadraw "sqlite" "jul-ee" "garuwlij"))
 
 (define (open-db-in-monolith)
-  (lvl (list "opendb" "sqlite" "/home/paul/proj/smp/a.db")))
+  (lvl (list "opendb" "sqlite"
+             (string-append
+              (getenvp "SMP_HOME") "/a.db"))))
 
-(define (tract:target g shape)
+(define (tract:target shape)
   (lvl (list "tract_target" shape)))
 
-(define (vow-uh g tk)
-  (tract:target g "uh")
+(define (vow-uh tk)
+  (tract:target "uh")
   tk)
 
-(define (jul-ah g tk)
-  (tract:target g "jul-ah")
+(define (jul-ah tk)
+  (tract:target "jul-ah")
   tk)
 
-(define (jul-oo g tk)
-  (tract:target g "jul-oo")
+(define (jul-oo tk)
+  (tract:target "jul-oo")
   tk)
 
-(define (jul-oh g tk)
-  (tract:target g "jul-oh")
+(define (jul-oh tk)
+  (tract:target "jul-oh")
   tk)
 
-(define (jul-uh g tk)
-  (tract:target g "jul-uh")
+(define (jul-uh tk)
+  (tract:target "jul-uh")
   tk)
 
-(define (jul-ee g tk)
-  (tract:target g "jul-ee")
+(define (jul-ee tk)
+  (tract:target "jul-ee")
   tk)
 
-(define (jul-ahmute g tk)
-  (tract:target g "jul-ahmute")
+(define (jul-ahmute tk)
+  (tract:target "jul-ahmute")
   tk)
 
-(define (jul-la g tk)
-  (tract:target g "jul-eh")
+(define (jul-la tk)
+  (tract:target "jul-eh")
   tk)
 
-(define (jul-ls1 g tk)
-  (tract:target g "lowshape1")
+(define (jul-ls1 tk)
+  (tract:target "lowshape1")
   tk)
 
-(define (jul-ls2 g tk)
-  (tract:target g "lowshape2")
+(define (jul-ls2 tk)
+  (tract:target "lowshape2")
   tk)
 
-(define (jul-ls3 g tk)
-  (tract:target g "lowshape3")
+(define (jul-ls3 tk)
+  (tract:target "lowshape3")
   tk)
 
 (define pitch-words
@@ -89,16 +91,11 @@
     ("ls3" jul-ls3)
 ))
 
-(define (configure-tract tr g smoothtime)
-  (tract:gest-setup tr g)
-  (tract:gest-smoothtime g smoothtime)
-  (tract:use-diameters tr 0))
+(define (singer str)
+   (gst:eval-addwords pitch-words str))
 
-(define (singer g str)
-   (gst:eval-addwords g pitch-words str))
-
-(define (singer-words g words str)
-   (gst:eval-addwords g (append pitch-words words) str))
+(define (singer-words words str)
+   (gst:eval-addwords (append pitch-words words) str))
 
 (define (cabset in cab)
   (param in)
@@ -238,7 +235,7 @@
   (seq)
   (lvl "gesticulate zz zz"))
 
-(define (gest:setscalar g scl val)
+(define (gest:setscalar scl val)
   (scl)
   (lvl (list "gest_setscalar" "zz" (number->string val))))
 
@@ -320,7 +317,6 @@ loop fin
     (lvl "tract_gest zz zz")
 
     (singer-words
-     '()
      (list (gst:wordentry "gt" (gst:mksetter gt)))
      score)
     (cnd)
