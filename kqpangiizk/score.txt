@@ -1,0 +1,136 @@
+@mel
+beg 4 4
+mr 2 t 4 mg
+t 5 mg
+t 7 mg
+end
+beg 4 4
+mr 2 t 8 mg
+t 7 mg
+pr 3
+mr 2
+t 5 mg
+pr 2
+t 7 mg
+t 5 mg
+end
+beg 4 4
+mr 2 t 4 gl
+mr 2 t 0 mg
+end
+
+beg 4 4
+mr 2 t 4 mg
+t 5 mg
+t 7 mg
+end
+beg 4 4
+mr 2 t 8 mg
+t 7 mg
+pr 3
+mr 2
+t 5 mg
+pr 2
+t 7 mg
+t 5 mg
+end
+beg 4 4
+mr 2 t 4 gl
+mr 2 t 0 mg
+end
+
+beg 4 4
+mr 2 t 11 lin
+mr 2 t 12 gl
+end
+
+beg 4 4
+mr 2 t -2 lin
+mr 2 t 0 gl
+end
+
+beg 4 4
+t 0 lin
+t 1 lin
+mr 2 t 0 gl
+end
+loop fin
+
+@modindex
+beg 4 4
+mr 2 t 1 exp 1
+mr 2 t 3 mg
+end
+beg 4 4
+mr 4 t 3 mg
+end
+beg 4 4
+mr 4 t 1 mg
+end
+loop fin
+
+@bass
+beg 8 8
+mr 4 t 0 mg
+mr 4 t -7 mg
+end
+beg 8 8
+mr 4 t 0 mg
+mr 4 t -4 mg
+end
+beg 8 8
+mr 4 t -7 mg
+mr 4 t 0 mg
+end
+beg 8 8
+mr 3 t 0 mg
+t -2 lin
+mr 3 t 0 mg
+t -2 lin
+end
+beg 4 4
+mr 4 t 0 mg
+end
+loop fin
+
+@bassfdbk
+beg 8 2
+t 0.1 exp 1
+t 0.7
+end
+loop fin
+
+@snare
+beg 4 4
+mr 4 t 0 rmp r 16 unroll 0 exp 1
+end
+beg 4 4
+mr 2 t 0 rmp r 3 unroll 0 lin
+mr 2 t 0 rmp r 5 unroll 0 lin
+end
+beg 4 4
+mr 2 t 0 rmp r 3 unroll 0 exp -1
+mr 2 t 0 rmp r 12 unroll 0 exp 3
+end
+loop fin
+
+@thoomp
+beg 4 4
+t 0 rmp r 3 unroll 0.5
+t 0 rmp r 2 unroll 0
+t 0 rmp r 1 unroll 1
+t 0 rmp r 1
+end
+beg 4 4
+t 0 rmp r 3 unroll 0.5
+t 0 rmp r 2 unroll 1
+t 0 rmp r 1
+t 0 rmp r 12 unroll 0
+end
+loop fin
+
+@ping
+beg 24 1
+t 0 rmp r 64 unroll 0 exp 3
+end
+loop fin

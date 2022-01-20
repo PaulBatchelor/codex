@@ -38,3 +38,6 @@ codex: codex.c
 
 server:
 	weewiki server - $(PORT)
+
+clean:
+	$(RM) codex

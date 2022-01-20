@@ -124,7 +124,6 @@
   (kuf:setblk 8 (lgrab "kuf") 4 0 (genblk))
   (stripes 6 0)
 
-
   (stripes 0 2)
   (kuf:setblk 8 (lgrab "kuf") 2 2 (genblk))
   (stripes 4 2)
