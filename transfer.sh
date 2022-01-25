@@ -10,4 +10,5 @@ rsync -Rrvt \
       siigolue/pyda.png siigolue/pyda.mp4 \
       taogoryxs/jatash.png taogoryxs/jatash.mp4 \
       qipacal/rai.png qipacal/rai.mp4 \
+      kqpangiizk/mitireez.png kqpangiizk/mitireez.mp4 \
       artifacts
