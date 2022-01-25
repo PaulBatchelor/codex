@@ -1,8 +1,3 @@
-(load (string-append (mnotop) "/core.scm"))
-(load (mnopath "sqlar.scm"))
-(load (mnopath "gest.scm"))
-(load (mnopath "ugens.scm"))
-
 (define (open-db-in-monolith)
   (sqlar:opendb "sqlite" (string-append (getenv "SMP_HOME") "/a.db")))
 
@@ -236,14 +231,28 @@
   (att -10)
   (add zz zz)
 
+  (lvl "varnew cnd")
+  (regget 0)
+  (lvl "rephasor zz 0.25")
+  (lvl "expmap zz 3")
+  (lvl "rephasor zz 8")
+  (lvl "varcpy zz cnd")
+
+  (lvl "varnew cnd2")
+  (regget 0)
+  (lvl "rephasor zz 0.25")
+  (lvl "varcpy zz cnd2")
+
   (unhold (regget 0))
   (regclr 0)
   (unhold (regget 1))
-  (regclr 1))
+  (regclr 1)
+)
 
 (define (mksound wav dur)
   (loop15-init)
   (loop15-redux)
+
 
   (tenv (tick) 0.001 (- dur 5.001) 5)
   (mul zz zz)
